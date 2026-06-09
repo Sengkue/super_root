@@ -1,4 +1,4 @@
-const { Post, Comment, Like, User } = require('../models');
+const { Post, Comment, Like, User, SavedPost } = require('../models');
 
 // Helper to get active user ID from headers or fallback to Alice
 const getActiveUserId = async (req) => {
@@ -27,14 +27,37 @@ const postController = {
   // Get all posts for the feed
   getFeed: async (req, res) => {
     try {
-      const posts = await Post.findAll({
+      const { feedType, viewerId } = req.query;
+      let whereClause = {};
+
+      if (feedType === 'following' && viewerId) {
+        const { Follow } = require('../models');
+        const follows = await Follow.findAll({ where: { followerId: viewerId } });
+        const followingIds = follows.map(f => f.followingId);
+        const { Op } = require('sequelize');
+        whereClause = { userId: { [Op.in]: followingIds } };
+      }
+
+      let posts = await Post.findAll({
+        where: whereClause,
         order: [['createdAt', 'DESC']],
         include: [
           { model: User, as: 'user', attributes: ['id', 'username'] },
           { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
-          { model: Like, as: 'likes', attributes: ['id', 'userId'] }
+          { model: Like, as: 'likes', attributes: ['id', 'userId'] },
+          { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]
       });
+
+      if (feedType === 'foryou') {
+        // Algorithm: sort by (likes count + comments count) DESC
+        posts = posts.sort((a, b) => {
+          const scoreA = (a.likes?.length || 0) + (a.comments?.length || 0);
+          const scoreB = (b.likes?.length || 0) + (b.comments?.length || 0);
+          return scoreB - scoreA;
+        });
+      }
+
       res.status(200).json({ success: true, data: posts });
     } catch (error) {
       console.error('Error fetching feed:', error);
@@ -52,7 +75,8 @@ const postController = {
         include: [
           { model: User, as: 'user', attributes: ['id', 'username'] },
           { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
-          { model: Like, as: 'likes', attributes: ['id', 'userId'] }
+          { model: Like, as: 'likes', attributes: ['id', 'userId'] },
+          { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]
       });
       res.status(200).json({ success: true, data: posts });
@@ -77,7 +101,8 @@ const postController = {
         include: [
           { model: User, as: 'user', attributes: ['id', 'username'] },
           { model: Comment, as: 'comments' },
-          { model: Like, as: 'likes' }
+          { model: Like, as: 'likes' },
+          { model: SavedPost, as: 'saves' }
         ]
       });
 
@@ -182,11 +207,63 @@ const postController = {
       await Comment.destroy({ where: { postId: id, parentId: { [Op.not]: null } } });
       await Comment.destroy({ where: { postId: id } });
       await Like.destroy({ where: { postId: id } });
+      await SavedPost.destroy({ where: { postId: id } });
       await post.destroy();
       res.status(200).json({ success: true, message: 'Post deleted' });
     } catch (error) {
       console.error('Error deleting post:', error);
       res.status(500).json({ success: false, message: 'Failed to delete post' });
+    }
+  },
+
+  // Toggle save on a post
+  toggleSave: async (req, res) => {
+    try {
+      const { id: postId } = req.params;
+      const userId = await getActiveUserId(req);
+
+      if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+
+      const existingSave = await SavedPost.findOne({ where: { postId, userId } });
+
+      if (existingSave) {
+        await existingSave.destroy();
+        res.status(200).json({ success: true, message: 'Unsaved post', action: 'unsaved' });
+      } else {
+        await SavedPost.create({ postId, userId });
+        res.status(201).json({ success: true, message: 'Saved post', action: 'saved' });
+      }
+    } catch (error) {
+      console.error('Error toggling save:', error);
+      res.status(500).json({ success: false, message: 'Failed to toggle save' });
+    }
+  },
+
+  // Get saved posts for user
+  getSavedPosts: async (req, res) => {
+    try {
+      const userId = await getActiveUserId(req);
+      if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+
+      const saves = await SavedPost.findAll({ where: { userId } });
+      const postIds = saves.map(s => s.postId);
+
+      const { Op } = require('sequelize');
+      const posts = await Post.findAll({
+        where: { id: { [Op.in]: postIds } },
+        order: [['createdAt', 'DESC']],
+        include: [
+          { model: User, as: 'user', attributes: ['id', 'username'] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: Like, as: 'likes', attributes: ['id', 'userId'] },
+          { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
+        ]
+      });
+
+      res.status(200).json({ success: true, data: posts });
+    } catch (error) {
+      console.error('Error fetching saved posts:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch saved posts' });
     }
   }
 };

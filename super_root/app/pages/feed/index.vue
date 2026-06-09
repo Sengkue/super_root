@@ -4,15 +4,21 @@
       <!-- Left Sidebar -->
       <aside class="sidebar left-sidebar">
         <nav class="side-nav">
-          <div class="nav-item active">
-            <span class="icon">📰</span> Feed
-          </div>
-          <div class="nav-item">
+          <NuxtLink to="/feed?tab=all" class="nav-item" :class="{ 'active': $route.query.tab === 'all' || !$route.query.tab }">
+            <span class="icon">📰</span> All
+          </NuxtLink>
+          <NuxtLink to="/feed?tab=following" class="nav-item" :class="{ 'active': $route.query.tab === 'following' }">
+            <span class="icon">👥</span> Following
+          </NuxtLink>
+          <NuxtLink to="/feed?tab=foryou" class="nav-item" :class="{ 'active': $route.query.tab === 'foryou' }">
+            <span class="icon">✨</span> For You
+          </NuxtLink>
+          <NuxtLink to="/friends" class="nav-item">
             <span class="icon">👥</span> Friends
-          </div>
-          <div class="nav-item">
+          </NuxtLink>
+          <NuxtLink to="/saved" class="nav-item">
             <span class="icon">🔖</span> Saved
-          </div>
+          </NuxtLink>
           <div class="nav-item">
             <span class="icon">⚙️</span> Settings
           </div>
@@ -62,10 +68,14 @@ useHead({
   title: 'Super Root | Feed'
 });
 
+const route = useRoute();
 const authStore = useAuthStore();
 
-const { data: responseData, pending, error, refresh } = await useApiFetch('/posts', {
-  lazy: true
+const feedType = computed(() => route.query.tab || 'all');
+
+const { data: responseData, pending, error, refresh } = await useApiFetch(() => `/posts?feedType=${feedType.value}&viewerId=${authStore.activeUserId || ''}`, {
+  lazy: true,
+  watch: [feedType, () => authStore.activeUserId]
 });
 
 const posts = computed(() => responseData.value?.data || []);

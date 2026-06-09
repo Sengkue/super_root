@@ -29,10 +29,10 @@
         <svg class="w-7 h-7 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
         <span class="font-medium text-slate-200">Feed</span>
       </NuxtLink>
-      <div class="bg-slate-800 p-4 rounded-2xl shadow-sm hover:bg-slate-700 transition-colors flex flex-col gap-2 cursor-pointer">
+      <NuxtLink to="/friends" class="bg-slate-800 p-4 rounded-2xl shadow-sm hover:bg-slate-700 transition-colors flex flex-col gap-2 cursor-pointer">
         <svg class="w-7 h-7 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
         <span class="font-medium text-slate-200">Friends</span>
-      </div>
+      </NuxtLink>
       <div class="bg-slate-800 p-4 rounded-2xl shadow-sm hover:bg-slate-700 transition-colors flex flex-col gap-2 cursor-pointer">
         <svg class="w-7 h-7 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
         <span class="font-medium text-slate-200">Favorites</span>

@@ -8,8 +8,8 @@
     <!-- Cover Photo & Avatar Section -->
     <div class="relative bg-slate-800 rounded-b-2xl border-x border-b border-slate-700 shadow-sm overflow-hidden mb-4">
       <!-- Cover Photo -->
-      <div class="h-48 md:h-64 relative bg-slate-800" :style="authStore.activeUser?.profile?.coverImage ? `background-image: url('${authStore.activeUser.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !authStore.activeUser?.profile?.coverImage}">
-        <div @click="coverImageInput?.click()" class="absolute bottom-4 right-4 w-9 h-9 bg-slate-800 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-700 transition-colors" :class="{'opacity-50 pointer-events-none': isUploadingCoverImage}">
+      <div class="h-48 md:h-64 relative bg-slate-800" :style="targetUser?.profile?.coverImage ? `background-image: url('${targetUser.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !targetUser?.profile?.coverImage}">
+        <div v-if="isOwnProfile" @click="coverImageInput?.click()" class="absolute bottom-4 right-4 w-9 h-9 bg-slate-800 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-700 transition-colors" :class="{'opacity-50 pointer-events-none': isUploadingCoverImage}">
           <svg v-if="!isUploadingCoverImage" class="w-5 h-5 text-slate-200" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
           <svg v-else class="animate-spin w-5 h-5 text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
         </div>
@@ -19,11 +19,11 @@
       <div class="px-4 pb-4">
         <!-- Avatar overlapping cover -->
         <div class="relative -mt-16 mb-3 inline-block">
-          <div class="w-32 h-32 rounded-full border-4 border-slate-800 flex items-center justify-center shadow-md relative z-10 overflow-hidden bg-slate-800" :class="{'bg-gradient-to-br from-blue-500 to-pink-500': !authStore.activeUser?.profile?.profileImage, 'opacity-75': isUploadingProfileImage}">
-            <img v-if="authStore.activeUser?.profile?.profileImage" :src="authStore.activeUser.profile.profileImage" class="w-full h-full object-cover" />
-            <span v-else class="text-6xl font-bold text-white">{{ authStore.activeUser?.username?.charAt(0).toUpperCase() || '?' }}</span>
+          <div class="w-32 h-32 rounded-full border-4 border-slate-800 flex items-center justify-center shadow-md relative z-10 overflow-hidden bg-slate-800" :class="{'bg-gradient-to-br from-blue-500 to-pink-500': !targetUser?.profile?.profileImage, 'opacity-75': isUploadingProfileImage}">
+            <img v-if="targetUser?.profile?.profileImage" :src="targetUser.profile.profileImage" class="w-full h-full object-cover" />
+            <span v-else class="text-6xl font-bold text-white">{{ targetUser?.username?.charAt(0).toUpperCase() || '?' }}</span>
           </div>
-          <div @click="profileImageInput?.click()" class="absolute bottom-1 right-1 w-9 h-9 bg-slate-700 rounded-full flex items-center justify-center cursor-pointer border-2 border-slate-800 z-20 hover:bg-slate-600 transition-colors" :class="{'opacity-50 pointer-events-none': isUploadingProfileImage}">
+          <div v-if="isOwnProfile" @click="profileImageInput?.click()" class="absolute bottom-1 right-1 w-9 h-9 bg-slate-700 rounded-full flex items-center justify-center cursor-pointer border-2 border-slate-800 z-20 hover:bg-slate-600 transition-colors" :class="{'opacity-50 pointer-events-none': isUploadingProfileImage}">
             <svg v-if="!isUploadingProfileImage" class="w-5 h-5 text-slate-200" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
             <svg v-else class="animate-spin w-5 h-5 text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           </div>
@@ -34,44 +34,52 @@
           <!-- Name & Bio -->
           <div class="mb-4">
             <h1 class="text-2xl font-bold text-slate-50 mb-1 flex items-center gap-2">
-              {{ authStore.activeUser?.username || 'Guest' }}
+              {{ targetUser?.username || 'Guest' }}
               <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
             </h1>
             <div class="text-sm font-medium text-slate-400 flex flex-wrap gap-2 mb-2">
-              <span><strong class="text-slate-200">{{ authStore.activeUser?.followersCount || 0 }}</strong> Followers</span>
+              <span><strong class="text-slate-200">{{ targetUser?.followersCount || 0 }}</strong> Followers</span>
               <span>&bull;</span>
-              <span><strong class="text-slate-200">{{ authStore.activeUser?.followingCount || 0 }}</strong> Following</span>
+              <span><strong class="text-slate-200">{{ targetUser?.followingCount || 0 }}</strong> Following</span>
               <span>&bull;</span>
               <span><strong class="text-slate-200">{{ userPosts.length }}</strong> Posts</span>
             </div>
-            <p class="text-slate-300 text-sm" v-if="authStore.activeUser?.profile?.bio">{{ authStore.activeUser.profile.bio }}</p>
+            <p class="text-slate-300 text-sm" v-if="targetUser?.profile?.bio">{{ targetUser.profile.bio }}</p>
           </div>
 
           <!-- Action Buttons -->
           <div class="flex gap-2 mb-4">
-            <button @click="showCreatePost = true" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-              Add Post
-            </button>
-            <button @click="startEditing" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-              Edit Profile
-            </button>
+            <template v-if="isOwnProfile">
+              <button @click="showCreatePost = true" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Add Post
+              </button>
+              <button @click="startEditing" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                Edit Profile
+              </button>
+            </template>
+            <template v-else>
+              <button @click="toggleFollow" class="flex-1 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors" :class="isFollowingTarget ? 'bg-slate-600 hover:bg-slate-700' : 'bg-indigo-600 hover:bg-indigo-700'">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7h-2v2h-2v2h2v2h2v-2h2V9h-2V7z"></path></svg>
+                {{ isFollowingTarget ? 'Unfollow' : 'Follow' }}
+              </button>
+            </template>
           </div>
 
           <!-- Details List -->
           <div class="space-y-3 mb-4 text-sm text-slate-300">
-            <div class="flex items-center gap-3" v-if="authStore.activeUser?.profile?.livesIn">
+            <div class="flex items-center gap-3" v-if="targetUser?.profile?.livesIn">
               <svg class="w-5 h-5 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-              <span>Lives in <strong>{{ authStore.activeUser.profile.livesIn }}</strong></span>
+              <span>Lives in <strong>{{ targetUser.profile.livesIn }}</strong></span>
             </div>
-            <div class="flex items-center gap-3" v-if="authStore.activeUser?.profile?.worksAt">
+            <div class="flex items-center gap-3" v-if="targetUser?.profile?.worksAt">
               <svg class="w-5 h-5 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>
-              <span>Works at <strong>{{ authStore.activeUser.profile.worksAt }}</strong></span>
+              <span>Works at <strong>{{ targetUser.profile.worksAt }}</strong></span>
             </div>
-            <div class="flex items-center gap-3" v-if="authStore.activeUser?.email">
+            <div class="flex items-center gap-3" v-if="targetUser?.email">
               <svg class="w-5 h-5 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" clip-rule="evenodd"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
-              <a href="#" class="text-blue-400 hover:underline break-all">{{ authStore.activeUser.email }}</a>
+              <a href="#" class="text-blue-400 hover:underline break-all">{{ targetUser.email }}</a>
             </div>
           </div>
         </div>
@@ -118,7 +126,7 @@
       
       <div v-if="pending" class="text-center py-8 text-slate-400">Loading posts...</div>
       <div v-else-if="error" class="text-center py-8 text-red-400">Failed to load posts</div>
-      <div v-else-if="!authStore.activeUserId" class="text-center py-8 text-slate-400">No user selected.</div>
+      <div v-else-if="!targetUserId" class="text-center py-8 text-slate-400">No user selected.</div>
       <div v-else>
         <!-- Posts View -->
         <div v-if="activeTab === 'Posts'" class="flex flex-col gap-4">
@@ -184,12 +192,20 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { useRoute } from 'vue-router';
 
 useHead({
   title: 'Super Root | Profile'
 });
 
 const authStore = useAuthStore();
+const route = useRoute();
+
+const targetUserId = computed(() => route.query.id || authStore.activeUserId);
+const isOwnProfile = computed(() => targetUserId.value === authStore.activeUserId);
+const targetUser = ref(null);
+const isFollowingTarget = ref(false);
+
 const userPosts = ref([]);
 const pending = ref(false);
 const error = ref(null);
@@ -282,11 +298,11 @@ const updateProfileWithImageUrl = async (field, url) => {
   if (!authStore.activeUserId) return;
   
   const payload = {
-    bio: authStore.activeUser?.profile?.bio || '',
-    livesIn: authStore.activeUser?.profile?.livesIn || '',
-    worksAt: authStore.activeUser?.profile?.worksAt || '',
-    profileImage: authStore.activeUser?.profile?.profileImage || '',
-    coverImage: authStore.activeUser?.profile?.coverImage || ''
+    bio: targetUser.value?.profile?.bio || '',
+    livesIn: targetUser.value?.profile?.livesIn || '',
+    worksAt: targetUser.value?.profile?.worksAt || '',
+    profileImage: targetUser.value?.profile?.profileImage || '',
+    coverImage: targetUser.value?.profile?.coverImage || ''
   };
   
   payload[field] = url;
@@ -340,11 +356,11 @@ const uploadCoverImageToImgBB = async (event) => {
 
 const startEditing = () => {
   editForm.value = {
-    bio: authStore.activeUser?.profile?.bio || '',
-    livesIn: authStore.activeUser?.profile?.livesIn || '',
-    worksAt: authStore.activeUser?.profile?.worksAt || '',
-    profileImage: authStore.activeUser?.profile?.profileImage || '',
-    coverImage: authStore.activeUser?.profile?.coverImage || ''
+    bio: targetUser.value?.profile?.bio || '',
+    livesIn: targetUser.value?.profile?.livesIn || '',
+    worksAt: targetUser.value?.profile?.worksAt || '',
+    profileImage: targetUser.value?.profile?.profileImage || '',
+    coverImage: targetUser.value?.profile?.coverImage || ''
   };
   isEditingProfile.value = true;
 };
@@ -361,6 +377,7 @@ const saveProfile = async () => {
     if (res.success) {
       // Refresh the user object in the store
       await authStore.fetchCurrentUser();
+      await fetchTargetUser();
       isEditingProfile.value = false;
     }
   } catch (err) {
@@ -376,7 +393,7 @@ const handlePostCreated = () => {
 };
 
 const fetchUserPosts = async () => {
-  if (!authStore.activeUserId) {
+  if (!targetUserId.value) {
     userPosts.value = [];
     return;
   }
@@ -384,7 +401,7 @@ const fetchUserPosts = async () => {
   error.value = null;
   try {
     const $api = useApi();
-    const res = await $api(`/posts/user/${authStore.activeUserId}`);
+    const res = await $api(`/posts/user/${targetUserId.value}`);
     if (res.success) {
       userPosts.value = res.data;
     }
@@ -396,11 +413,54 @@ const fetchUserPosts = async () => {
   }
 };
 
+
+const fetchTargetUser = async () => {
+  if (!targetUserId.value) return;
+  try {
+    const $api = useApi();
+    const res = await $api(`/users/${targetUserId.value}?viewerId=${authStore.activeUserId || ''}`);
+    if (res.success) {
+      targetUser.value = res.data;
+      isFollowingTarget.value = res.data.isFollowing;
+    }
+  } catch (err) {
+    console.error('Failed to fetch user', err);
+  }
+};
+
+const toggleFollow = async () => {
+  if (!authStore.activeUserId || !targetUserId.value) return;
+  try {
+    const endpoint = isFollowingTarget.value ? '/follows/unfollow' : '/follows/follow';
+    const $api = useApi();
+    const res = await $api(endpoint, {
+      method: 'POST',
+      body: { followerId: authStore.activeUserId, followingId: targetUserId.value }
+    });
+    if (res.success) {
+      isFollowingTarget.value = !isFollowingTarget.value;
+      if (isFollowingTarget.value) {
+        targetUser.value.followersCount++;
+      } else {
+        targetUser.value.followersCount--;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to toggle follow', err);
+  }
+};
+
 onMounted(() => {
+  fetchTargetUser();
   fetchUserPosts();
 });
 
+watch(() => targetUserId.value, () => {
+  fetchTargetUser();
+  fetchUserPosts();
+});
 watch(() => authStore.activeUserId, () => {
+  fetchTargetUser();
   fetchUserPosts();
 });
 </script>

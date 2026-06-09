@@ -5,6 +5,7 @@ const Comment = require('./comment.model');
 const Like = require('./like.model');
 const UserProfile = require('./userProfile.model');
 const Follow = require('./follow.model');
+const SavedPost = require('./savedPost.model');
 
 // Define Relationships
 
@@ -36,6 +37,14 @@ Like.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Post.hasMany(Like, { foreignKey: 'postId', as: 'likes' });
 Like.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 
+// User <-> SavedPost
+User.hasMany(SavedPost, { foreignKey: 'userId', as: 'saves' });
+SavedPost.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// Post <-> SavedPost
+Post.hasMany(SavedPost, { foreignKey: 'postId', as: 'saves' });
+SavedPost.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+
 // Comment <-> Comment (Replies)
 Comment.hasMany(Comment, { foreignKey: 'parentId', as: 'replies' });
 Comment.belongsTo(Comment, { foreignKey: 'parentId', as: 'parent' });
@@ -47,5 +56,6 @@ module.exports = {
   Post,
   Comment,
   Like,
-  Follow
+  Follow,
+  SavedPost
 };

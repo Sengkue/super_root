@@ -5,13 +5,30 @@ const userController = {
   // Get all users
   getAllUsers: async (req, res) => {
     try {
+      const { viewerId } = req.query;
       const users = await User.findAll({
         attributes: { exclude: ['password'] }, // Don't send passwords to client
         include: [{ model: UserProfile, as: 'profile' }]
       });
+      
+      let followingIds = new Set();
+      if (viewerId) {
+        const { Follow } = require('../models');
+        const follows = await Follow.findAll({ where: { followerId: viewerId } });
+        followingIds = new Set(follows.map(f => f.followingId));
+      }
+
+      const usersWithFollowStatus = users.map(u => {
+        const userData = u.toJSON();
+        return {
+          ...userData,
+          isFollowing: followingIds.has(userData.id)
+        };
+      });
+
       res.status(200).json({
         success: true,
-        data: users
+        data: usersWithFollowStatus
       });
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -27,6 +44,7 @@ const userController = {
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
+      const { viewerId } = req.query;
       const user = await User.findByPk(id, {
         attributes: { exclude: ['password'] },
         include: [{ model: UserProfile, as: 'profile' }]
@@ -40,12 +58,22 @@ const userController = {
       const followersCount = await user.countFollowers();
       const followingCount = await user.countFollowing();
 
+      let isFollowing = false;
+      if (viewerId) {
+        const { Follow } = require('../models');
+        const followRecord = await Follow.findOne({
+          where: { followerId: viewerId, followingId: id }
+        });
+        isFollowing = !!followRecord;
+      }
+
       res.status(200).json({ 
         success: true, 
         data: {
           ...user.toJSON(),
           followersCount,
-          followingCount
+          followingCount,
+          isFollowing
         }
       });
     } catch (error) {

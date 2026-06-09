@@ -7,9 +7,21 @@
         <div class="author">{{ post.user?.username || 'Unknown User' }}</div>
         <div class="time">{{ new Date(post.createdAt).toLocaleString() }}</div>
       </div>
-      <div v-if="isMyPost" class="post-owner-actions">
-        <button @click="isEditing = !isEditing" class="icon-btn" title="Edit Post">✏️</button>
-        <button @click="deletePost" class="icon-btn delete-btn" title="Delete Post">🗑️</button>
+      <div class="post-options-wrapper">
+        <button @click="showOptionsMenu = !showOptionsMenu" class="icon-btn options-btn" title="Options">⋮</button>
+        <div v-if="showOptionsMenu" class="options-menu">
+          <button @click="handleToggleSave" class="options-item" :class="{ 'text-emerald-500': isSavedByMe }">
+            <span class="icon">🔖</span> {{ isSavedByMe ? 'Unsave Post' : 'Save Post' }}
+          </button>
+          <template v-if="isMyPost">
+            <button @click="handleEdit" class="options-item">
+              <span class="icon">✏️</span> Edit Post
+            </button>
+            <button @click="handleDelete" class="options-item delete-item">
+              <span class="icon">🗑️</span> Delete Post
+            </button>
+          </template>
+        </div>
       </div>
     </div>
 
@@ -224,6 +236,7 @@ const expandedCommentIds = ref([]);
 const isEditing = ref(false);
 const editContent = ref(props.post.content);
 const isSaving = ref(false);
+const showOptionsMenu = ref(false);
 
 const isMyPost = computed(() => {
   return authStore.activeUserId && String(props.post.userId) === String(authStore.activeUserId);
@@ -242,6 +255,21 @@ const deletePost = async () => {
     console.error('Failed to delete post', error);
     alert('Failed to delete post');
   }
+};
+
+const handleEdit = () => {
+  showOptionsMenu.value = false;
+  isEditing.value = !isEditing.value;
+};
+
+const handleDelete = () => {
+  showOptionsMenu.value = false;
+  deletePost();
+};
+
+const handleToggleSave = () => {
+  showOptionsMenu.value = false;
+  toggleSave();
 };
 
 const saveEdit = async () => {
@@ -287,16 +315,26 @@ const prepareSubReply = (parentId, username) => {
   }
 };
 
-// Local optimistic state for likes
+// Local optimistic state for likes and saves
 const localLikes = ref([...(props.post.likes || [])]);
+const localSaves = ref([...(props.post.saves || [])]);
 
 watch(() => props.post.likes, (newLikes) => {
   localLikes.value = [...(newLikes || [])];
 }, { deep: true });
 
+watch(() => props.post.saves, (newSaves) => {
+  localSaves.value = [...(newSaves || [])];
+}, { deep: true });
+
 const isLikedByMe = computed(() => {
   if (!authStore.activeUserId) return false;
   return localLikes.value.some(like => String(like.userId) === String(authStore.activeUserId));
+});
+
+const isSavedByMe = computed(() => {
+  if (!authStore.activeUserId) return false;
+  return localSaves.value.some(save => String(save.userId) === String(authStore.activeUserId));
 });
 
 // Parse content into text and link tokens safely
@@ -437,6 +475,44 @@ const toggleLike = async () => {
   }
 };
 
+const isSavingPost = ref(false);
+
+const toggleSave = async () => {
+  if (!authStore.requireAuth()) {
+    return;
+  }
+  
+  if (isSavingPost.value) return;
+  isSavingPost.value = true;
+  
+  // Optimistic UI update
+  const currentlySaved = isSavedByMe.value;
+  if (currentlySaved) {
+    localSaves.value = localSaves.value.filter(save => String(save.userId) !== String(authStore.activeUserId));
+  } else {
+    localSaves.value.push({ userId: authStore.activeUserId });
+  }
+
+  try {
+    const $api = useApi();
+    await $api(`/posts/${props.post.id}/save`, {
+      method: 'POST',
+      headers: { 'userid': authStore.activeUserId }
+    });
+    emit('refresh'); // Useful to refresh saved page list
+  } catch (e) {
+    console.error('Save failed', e);
+    // Revert optimistic update
+    if (currentlySaved) {
+      localSaves.value.push({ userId: authStore.activeUserId });
+    } else {
+      localSaves.value = localSaves.value.filter(save => String(save.userId) !== String(authStore.activeUserId));
+    }
+  } finally {
+    isSavingPost.value = false;
+  }
+};
+
 const showShareMenu = ref(false);
 
 const postUrl = computed(() => {
@@ -563,11 +639,66 @@ const sharePost = () => {
   border-radius: 50%;
   transition: background 0.2s;
   opacity: 0.7;
+  color: white;
 }
 
 .icon-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   opacity: 1;
+}
+
+.options-btn {
+  font-weight: bold;
+  font-size: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.post-options-wrapper {
+  margin-left: auto;
+  position: relative;
+}
+
+.options-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.options-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.options-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.options-item.delete-item:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .edit-mode {
@@ -1079,5 +1210,9 @@ const sharePost = () => {
 .add-comment button:disabled, .add-reply button:disabled {
   color: var(--text-secondary);
   cursor: not-allowed;
+}
+.saved-active {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
 }
 </style>
