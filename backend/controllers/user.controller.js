@@ -1,4 +1,5 @@
 const { User, UserProfile } = require('../models');
+const bcrypt = require('bcrypt');
 
 // Controller functions
 const userController = {

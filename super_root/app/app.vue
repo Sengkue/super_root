@@ -58,7 +58,7 @@ onMounted(() => {
 });
 
 const currentLayout = computed(() => {
-  if (route.path === '/login' || route.path === '/register') return 'default';
+  if (route.path === '/login' || route.path === '/register') return 'blank';
   return windowWidth.value < 768 ? 'app' : 'web';
 });
 

@@ -16,18 +16,19 @@ const searchController = {
       const users = await User.findAll({
         where: {
           [Op.or]: [
-            { username: { [Op.like]: searchQuery } },
-            { '$profile.bio$': { [Op.like]: searchQuery } }
+            { username: { [Op.iLike]: searchQuery } },
+            { number: { [Op.iLike]: searchQuery } },
+            { '$profile.bio$': { [Op.iLike]: searchQuery } }
           ]
         },
         include: [{ model: UserProfile, as: 'profile' }],
-        attributes: ['id', 'username', 'email']
+        attributes: ['id', 'username', 'number']
       });
 
       // Search Posts (matching content)
       const posts = await Post.findAll({
         where: {
-          content: { [Op.like]: searchQuery }
+          content: { [Op.iLike]: searchQuery }
         },
         order: [['createdAt', 'DESC']],
         include: [

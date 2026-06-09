@@ -63,6 +63,10 @@
 <script setup>
 import { ref } from 'vue';
 
+definePageMeta({
+  layout: 'blank'
+});
+
 const username = ref('');
 const number = ref('');
 const password = ref('');
@@ -118,7 +122,7 @@ const handleRegister = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 150px);
+  min-height: 100vh;
   padding: 2rem;
   animation: fadeIn 0.3s ease-out;
 }

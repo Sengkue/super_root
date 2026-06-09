@@ -81,7 +81,12 @@ const searchQuery = ref('');
 const filteredUsers = computed(() => {
   if (!searchQuery.value) return users.value;
   const q = searchQuery.value.toLowerCase();
-  return users.value.filter(u => u.username.toLowerCase().includes(q));
+  return users.value.filter(u => {
+    const matchUsername = u.username && u.username.toLowerCase().includes(q);
+    const matchNumber = u.number && u.number.includes(q);
+    const matchBio = u.profile?.bio && u.profile.bio.toLowerCase().includes(q);
+    return matchUsername || matchNumber || matchBio;
+  });
 });
 
 const fetchUsers = async () => {

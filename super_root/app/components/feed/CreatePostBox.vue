@@ -11,11 +11,6 @@
           What's on your mind, {{ authStore.activeUserObj?.username || 'User' }}?
         </button>
       </div>
-      <div class="trigger-actions">
-        <button class="trigger-action-btn"><span class="icon text-red-500">📹</span> <span class="font-semibold text-slate-400">Live Video</span></button>
-        <button class="trigger-action-btn" @click="openModal"><span class="icon text-green-500">📷</span> <span class="font-semibold text-slate-400">Photo/video</span></button>
-        <button class="trigger-action-btn hidden sm:flex"><span class="icon text-yellow-500">😊</span> <span class="font-semibold text-slate-400">Feeling/activity</span></button>
-      </div>
     </div>
 
     <!-- Create Post Modal -->
@@ -283,35 +278,6 @@ const submitPost = async () => {
 
 .trigger-btn:hover {
   background: rgba(15, 23, 42, 0.8);
-}
-
-.trigger-actions {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid var(--border-color, #334155);
-  padding-top: 0.5rem;
-}
-
-.trigger-action-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.trigger-action-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.icon {
-  font-size: 1.5rem;
 }
 
 /* Modal Overlay */

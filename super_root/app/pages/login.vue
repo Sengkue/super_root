@@ -43,6 +43,10 @@
 import { ref } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
+definePageMeta({
+  layout: 'blank'
+});
+
 const authStore = useAuthStore();
 
 const emailOrPhone = ref('');
@@ -84,7 +88,7 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 150px);
+  min-height: 100vh;
   padding: 2rem;
   animation: fadeIn 0.3s ease-out;
 }
