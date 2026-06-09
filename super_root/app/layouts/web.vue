@@ -1,8 +1,40 @@
 <template>
   <div class="flex flex-col min-h-screen bg-slate-900">
-    <AppHeader />
+    <header class="flex justify-between items-center px-8 py-4 bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-20">
+      <div class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Super Root</div>
+      <nav class="flex gap-6 items-center">
+        <NuxtLink to="/feed?tab=all" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'all' }">All</NuxtLink>
+        <NuxtLink to="/feed?tab=following" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'following' }">Following</NuxtLink>
+        <NuxtLink to="/feed?tab=foryou" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'foryou' }">For You</NuxtLink>
+        <NuxtLink to="/profile" class="text-slate-400 font-medium hover:text-slate-50 [&.router-link-active]:text-blue-500">Profile</NuxtLink>
+        
+        <div class="relative w-64 ml-2">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input 
+            type="text" 
+            v-model="searchQuery" 
+            @keyup.enter="handleSearch" 
+            placeholder="Search..." 
+            class="w-full bg-slate-900/50 border border-slate-700 text-slate-200 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-9 p-1.5 transition-colors"
+          >
+        </div>
+        
+        <div class="flex items-center gap-4 ml-4 pl-4 border-l border-slate-700">
+          <template v-if="authStore.isLoggedIn">
+            <span class="text-slate-400 text-sm">Hi, {{ authStore.activeUser?.username || 'User' }}</span>
+            <button class="bg-transparent border border-slate-700 text-slate-400 px-3 py-1.5 rounded-lg text-sm hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition-colors" @click="handleLogout">Logout</button>
+          </template>
+          <template v-else>
+            <NuxtLink to="/login" class="text-slate-400 font-medium hover:text-slate-50">Log In</NuxtLink>
+            <NuxtLink to="/register" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 transition-colors">Sign Up</NuxtLink>
+          </template>
+        </div>
+      </nav>
+    </header>
 
-    <main class="flex-1 md:p-8 p-0 w-full max-w-6xl mx-auto">
+    <main class="flex-1 p-8 w-full max-w-6xl mx-auto">
       <div class="feed-layout animate-[fadeIn_0.4s_ease-out]">
         <!-- Left Sidebar -->
         <aside class="sidebar left-sidebar">
@@ -43,13 +75,29 @@
       </div>
     </main>
 
-    <footer class="hidden md:block p-6 text-center text-slate-500 border-t border-slate-800 text-sm mt-8">
+    <footer class="p-6 text-center text-slate-500 border-t border-slate-800 text-sm mt-8">
       <p>&copy; 2026 Super Root. All rights reserved.</p>
     </footer>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore();
+const searchQuery = ref('');
+
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    navigateTo(`/search?q=${encodeURIComponent(searchQuery.value.trim())}`);
+  }
+};
+
+const handleLogout = () => {
+  authStore.logout();
+  navigateTo('/login');
+};
 </script>
 
 <style scoped>
@@ -65,15 +113,6 @@
     grid-template-columns: 200px minmax(0, 1fr);
   }
   .right-sidebar {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .feed-layout {
-    grid-template-columns: 1fr;
-  }
-  .left-sidebar {
     display: none;
   }
 }

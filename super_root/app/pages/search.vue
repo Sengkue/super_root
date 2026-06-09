@@ -1,8 +1,21 @@
 <template>
   <div class="search-page">
-    <div class="flex items-center gap-3 mb-6">
-      <h1 class="text-2xl font-bold text-slate-50 flex items-center gap-2">
-        <span class="text-3xl">🔍</span> Search Results for "{{ query }}"
+    <div class="mb-6">
+      <div class="relative w-full">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <span class="text-xl opacity-50">🔍</span>
+        </div>
+        <input 
+          type="text" 
+          v-model="searchInput" 
+          @keyup.enter="handleSearchSubmit" 
+          placeholder="Search for users or posts..." 
+          class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-lg rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block pl-12 p-4 transition-colors shadow-sm"
+        >
+      </div>
+      
+      <h1 v-if="query" class="text-xl font-bold text-slate-300 mt-6 px-1">
+        Results for "{{ query }}"
       </h1>
     </div>
 
@@ -18,7 +31,8 @@
     <div v-else>
       <div v-if="users.length === 0 && posts.length === 0" class="empty-state">
         <span class="text-5xl block mb-4">📭</span>
-        <p class="text-xl">No matching users or posts found.</p>
+        <p class="text-xl" v-if="query">No matching users or posts found.</p>
+        <p class="text-xl" v-else>Type something to search.</p>
       </div>
 
       <!-- Users Results -->
@@ -68,16 +82,14 @@
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 
-definePageMeta({
-  layout: 'feed'
-});
-
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const query = ref('');
+const searchInput = ref(route.query.q || '');
 const users = ref([]);
 const posts = ref([]);
 const pending = ref(true);
@@ -85,6 +97,7 @@ const error = ref(null);
 
 const performSearch = async () => {
   query.value = route.query.q || '';
+  searchInput.value = query.value;
   if (!query.value.trim()) {
     users.value = [];
     posts.value = [];
@@ -118,6 +131,14 @@ const performSearch = async () => {
 onMounted(() => {
   performSearch();
 });
+
+const handleSearchSubmit = () => {
+  if (searchInput.value.trim()) {
+    router.push({ path: '/search', query: { q: searchInput.value.trim() } });
+  } else {
+    router.push({ path: '/search' });
+  }
+};
 
 watch(() => route.query.q, () => {
   performSearch();

@@ -69,10 +69,6 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
-definePageMeta({
-  layout: 'feed'
-});
-
 useHead({
   title: 'Super Root | Friends'
 });

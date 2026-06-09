@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen bg-slate-900">
     <AppHeader />
 
-    <main class="flex-1 md:p-8 p-0 w-full max-w-6xl mx-auto">
+    <main class="flex-1 md:p-8 p-0 pb-20 md:pb-0 w-full max-w-6xl mx-auto">
       <slot />
     </main>
 

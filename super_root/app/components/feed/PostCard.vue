@@ -758,11 +758,15 @@ const sharePost = () => {
   margin-bottom: 1.5rem;
   line-height: 1.6;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .post-link {
   color: #3b82f6;
   text-decoration: none;
+  word-break: break-all;
 }
 
 .post-link:hover {

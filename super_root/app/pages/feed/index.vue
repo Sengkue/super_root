@@ -1,8 +1,10 @@
 <template>
     <div class="main-feed">
-      <FeedCreatePostBox 
-        @post-created="refresh"
-      />
+      <div class="hidden md:block">
+        <FeedCreatePostBox 
+          @post-created="refresh"
+        />
+      </div>
       
       <div v-if="pending && !posts.length" class="loading">Loading posts...</div>
       <div v-else-if="error && !posts.length" class="error">Failed to load posts</div>
@@ -24,10 +26,6 @@
 <script setup>
 import { computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
-
-definePageMeta({
-  layout: 'feed'
-});
 
 useHead({
   title: 'Super Root | Feed'

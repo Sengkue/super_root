@@ -190,9 +190,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useAuthStore } from '~/stores/auth';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '~/stores/auth';
 
 useHead({
   title: 'Super Root | Profile'

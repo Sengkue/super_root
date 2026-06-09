@@ -25,10 +25,6 @@
 import { ref, onMounted, watch } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
-definePageMeta({
-  layout: 'feed'
-});
-
 useHead({
   title: 'Super Root | Saved Posts'
 });
