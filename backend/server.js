@@ -25,6 +25,9 @@ app.use('/api/posts', postRoutes);
 const followRoutes = require('./routes/follow.routes');
 app.use('/api/follows', followRoutes);
 
+const searchRoutes = require('./routes/search.routes');
+app.use('/api/search', searchRoutes);
+
 // Basic health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
