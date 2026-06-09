@@ -296,7 +296,7 @@ watch(() => props.post.likes, (newLikes) => {
 
 const isLikedByMe = computed(() => {
   if (!authStore.activeUserId) return false;
-  return localLikes.value.some(like => Number(like.userId) === Number(authStore.activeUserId));
+  return localLikes.value.some(like => String(like.userId) === String(authStore.activeUserId));
 });
 
 // Parse content into text and link tokens safely
@@ -412,7 +412,7 @@ const toggleLike = async () => {
   // Optimistic UI update
   const currentlyLiked = isLikedByMe.value;
   if (currentlyLiked) {
-    localLikes.value = localLikes.value.filter(like => Number(like.userId) !== Number(authStore.activeUserId));
+    localLikes.value = localLikes.value.filter(like => String(like.userId) !== String(authStore.activeUserId));
   } else {
     localLikes.value.push({ userId: authStore.activeUserId });
   }
@@ -430,7 +430,7 @@ const toggleLike = async () => {
     if (currentlyLiked) {
       localLikes.value.push({ userId: authStore.activeUserId });
     } else {
-      localLikes.value = localLikes.value.filter(like => Number(like.userId) !== Number(authStore.activeUserId));
+      localLikes.value = localLikes.value.filter(like => String(like.userId) !== String(authStore.activeUserId));
     }
   } finally {
     isLiking.value = false;

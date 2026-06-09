@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    activeUserId: null,
-    activeUserObj: null,
-    users: []
-  }),
+  state: () => {
+    const authCookie = useCookie('auth_user_id');
+    return {
+      activeUserId: authCookie.value || null,
+      activeUserObj: null,
+      users: []
+    };
+  },
   
   getters: {
     activeUser: (state) => state.activeUserObj || state.users.find(u => u.id === state.activeUserId) || null,
@@ -40,6 +43,11 @@ export const useAuthStore = defineStore('auth', {
     
     setAuth(userId, userObj = null) {
       this.activeUserId = userId;
+      
+      // Persist the user ID in a cookie
+      const authCookie = useCookie('auth_user_id');
+      authCookie.value = userId;
+
       if (userObj) {
         this.activeUserObj = userObj;
       } else {
@@ -50,6 +58,10 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.activeUserId = null;
       this.activeUserObj = null;
+      
+      // Clear the cookie
+      const authCookie = useCookie('auth_user_id');
+      authCookie.value = null;
     },
     
     requireAuth() {

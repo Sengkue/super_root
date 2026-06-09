@@ -1,4 +1,4 @@
-const User = require('../models/user.model');
+const { User, UserProfile } = require('../models');
 
 // Controller functions
 const userController = {
@@ -6,7 +6,8 @@ const userController = {
   getAllUsers: async (req, res) => {
     try {
       const users = await User.findAll({
-        attributes: { exclude: ['password'] } // Don't send passwords to client
+        attributes: { exclude: ['password'] }, // Don't send passwords to client
+        include: [{ model: UserProfile, as: 'profile' }]
       });
       res.status(200).json({
         success: true,
@@ -27,76 +28,73 @@ const userController = {
     try {
       const { id } = req.params;
       const user = await User.findByPk(id, {
-        attributes: { exclude: ['password'] }
+        attributes: { exclude: ['password'] },
+        include: [{ model: UserProfile, as: 'profile' }]
       });
-      
+
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'User not found'
-        });
+        return res.status(404).json({ success: false, message: 'User not found' });
       }
 
-      res.status(200).json({
-        success: true,
-        data: user
+      // Get follower counts
+      const followersCount = await user.countFollowers();
+      const followingCount = await user.countFollowing();
+
+      res.status(200).json({ 
+        success: true, 
+        data: {
+          ...user.toJSON(),
+          followersCount,
+          followingCount
+        }
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error retrieving user',
-        error: error.message
-      });
+      console.error('Error fetching user:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch user', error: error.message });
     }
   },
 
-  // Create a new user
+  // Create new user (Sign up)
   createUser: async (req, res) => {
     try {
-      let { username, email, password } = req.body;
-      
-      // Basic validation
-      if (!username || !password) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please provide username and password'
-        });
+      const { username, email, password } = req.body;
+
+      // Validate basic input
+      if (!username || !email || !password) {
+        return res.status(400).json({ success: false, message: 'Please provide username, email and password' });
       }
 
-      // Autogenerate email if not provided to satisfy the model
-      if (!email) {
-        email = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@superroot.internal`;
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(409).json({ success: false, message: 'Email already in use' });
       }
 
-      // In a real application, you MUST hash the password here (e.g., with bcrypt)
-      // Example: const hashedPassword = await bcrypt.hash(password, 10);
-      
-      const newUser = await User.create({
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create user
+      const user = await User.create({
         username,
         email,
-        password // Should be hashedPassword in production
+        password: hashedPassword
       });
-
-      // Remove password from response
-      const userResponse = newUser.toJSON();
-      delete userResponse.password;
 
       res.status(201).json({
         success: true,
         message: 'User created successfully',
-        data: userResponse
+        data: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
       });
     } catch (error) {
       console.error('Error creating user:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to create user',
-        error: error.message
-      });
+      res.status(500).json({ success: false, message: 'Failed to create user', error: error.message });
     }
   },
 
-  // Login a user (simulated, no real password check for demo)
+  // Login
   login: async (req, res) => {
     try {
       const { emailOrPhone, password } = req.body;
@@ -113,7 +111,8 @@ const userController = {
             { email: emailOrPhone },
             { username: emailOrPhone }
           ]
-        }
+        },
+        include: [{ model: UserProfile, as: 'profile' }]
       });
 
       if (!user) {
@@ -123,14 +122,66 @@ const userController = {
       const userData = user.toJSON();
       delete userData.password;
 
+      // Also attach follower counts since login populates authStore.activeUserObj
+      const followersCount = await user.countFollowers();
+      const followingCount = await user.countFollowing();
+
       res.status(200).json({
         success: true,
         message: 'Login successful',
-        data: userData
+        data: {
+          ...userData,
+          followersCount,
+          followingCount
+        }
       });
     } catch (error) {
       console.error('Error during login:', error);
       res.status(500).json({ success: false, message: 'Login failed', error: error.message });
+    }
+  },
+
+  // Update User Profile
+  updateProfile: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { bio, livesIn, worksAt, profileImage, coverImage } = req.body;
+
+      // Ensure the user exists
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      // Find or create profile
+      let profile = await UserProfile.findOne({ where: { userId: id } });
+      if (!profile) {
+        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage });
+      } else {
+        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage });
+      }
+
+      // Fetch updated user with profile and counts
+      const updatedUser = await User.findByPk(id, {
+        attributes: { exclude: ['password'] },
+        include: [{ model: UserProfile, as: 'profile' }]
+      });
+
+      const followersCount = await updatedUser.countFollowers();
+      const followingCount = await updatedUser.countFollowing();
+
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully',
+        data: {
+          ...updatedUser.toJSON(),
+          followersCount,
+          followingCount
+        }
+      });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      res.status(500).json({ success: false, message: 'Failed to update profile', error: error.message });
     }
   }
 };

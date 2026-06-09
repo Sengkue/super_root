@@ -3,8 +3,18 @@ const User = require('./user.model');
 const Post = require('./post.model');
 const Comment = require('./comment.model');
 const Like = require('./like.model');
+const UserProfile = require('./userProfile.model');
+const Follow = require('./follow.model');
 
 // Define Relationships
+
+// User <-> UserProfile
+User.hasOne(UserProfile, { foreignKey: 'userId', as: 'profile' });
+UserProfile.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// User <-> User (Followers / Following)
+User.belongsToMany(User, { through: Follow, as: 'followers', foreignKey: 'followingId', otherKey: 'followerId' });
+User.belongsToMany(User, { through: Follow, as: 'following', foreignKey: 'followerId', otherKey: 'followingId' });
 
 // User <-> Post
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
@@ -33,7 +43,9 @@ Comment.belongsTo(Comment, { foreignKey: 'parentId', as: 'parent' });
 module.exports = {
   sequelize,
   User,
+  UserProfile,
   Post,
   Comment,
-  Like
+  Like,
+  Follow
 };

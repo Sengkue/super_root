@@ -22,6 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 
+const followRoutes = require('./routes/follow.routes');
+app.use('/api/follows', followRoutes);
+
 // Basic health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
@@ -40,21 +43,28 @@ const startServer = async () => {
     console.log('Database models synchronized.');
 
     // Seed dummy users if not exists
-    const { User } = require('./models');
+    const { User, UserProfile, Follow } = require('./models');
     
-    const defaultUsers = [
-      { username: 'Alice', email: 'alice@superroot.com', password: 'hash' },
-      { username: 'Bob', email: 'bob@superroot.com', password: 'hash' },
-      { username: 'Charlie', email: 'charlie@superroot.com', password: 'hash' }
-    ];
+    let alice = await User.findOne({ where: { email: 'alice@superroot.com' } });
+    if (!alice) {
+      const bcrypt = require('bcrypt');
+      const hash = await bcrypt.hash('password123', 10);
+      alice = await User.create({ username: 'Alice', email: 'alice@superroot.com', password: hash });
+      let bob = await User.create({ username: 'Bob', email: 'bob@superroot.com', password: hash });
+      let charlie = await User.create({ username: 'Charlie', email: 'charlie@superroot.com', password: hash });
 
-    for (const u of defaultUsers) {
-      await User.findOrCreate({
-        where: { username: u.username },
-        defaults: u
-      });
+      // Create profiles
+      await UserProfile.create({ userId: alice.id, bio: 'do it now', livesIn: 'Ban Dongdok, Laos', worksAt: 'Systory' });
+      await UserProfile.create({ userId: bob.id, bio: 'Hello World', livesIn: 'Vientiane', worksAt: 'Tech Co' });
+      await UserProfile.create({ userId: charlie.id, bio: 'Coding is fun', livesIn: 'Luang Prabang', worksAt: 'Freelance' });
+
+      // Create Dummy Follows
+      await Follow.create({ followerId: bob.id, followingId: alice.id });
+      await Follow.create({ followerId: charlie.id, followingId: alice.id });
+      await Follow.create({ followerId: alice.id, followingId: bob.id });
+
+      console.log('Dummy users (Alice, Bob, Charlie), their profiles, and follows initialized.');
     }
-    console.log(`Dummy users (Alice, Bob, Charlie) initialized.`);
 
     // Start listening for requests
     app.listen(PORT, () => {
