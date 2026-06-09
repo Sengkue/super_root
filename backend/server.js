@@ -18,6 +18,9 @@ app.use(cors());
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
+const trackActive = require('./middleware/trackActive');
+app.use(trackActive);
+
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
@@ -48,13 +51,13 @@ const startServer = async () => {
     // Seed dummy users if not exists
     const { User, UserProfile, Follow } = require('./models');
     
-    let alice = await User.findOne({ where: { email: 'alice@superroot.com' } });
+    let alice = await User.findOne({ where: { number: '1234567890' } });
     if (!alice) {
       const bcrypt = require('bcrypt');
       const hash = await bcrypt.hash('password123', 10);
-      alice = await User.create({ username: 'Alice', email: 'alice@superroot.com', password: hash });
-      let bob = await User.create({ username: 'Bob', email: 'bob@superroot.com', password: hash });
-      let charlie = await User.create({ username: 'Charlie', email: 'charlie@superroot.com', password: hash });
+      alice = await User.create({ username: 'Alice', number: '1234567890', password: hash });
+      let bob = await User.create({ username: 'Bob', number: '0987654321', password: hash });
+      let charlie = await User.create({ username: 'Charlie', number: '1122334455', password: hash });
 
       // Create profiles
       await UserProfile.create({ userId: alice.id, bio: 'do it now', livesIn: 'Ban Dongdok, Laos', worksAt: 'Systory' });

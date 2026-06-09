@@ -14,6 +14,16 @@
             required
           />
         </div>
+
+        <div class="form-group">
+          <label>Number</label>
+          <input 
+            type="tel" 
+            v-model="number" 
+            placeholder="020xxxxxxxx"
+            required
+          />
+        </div>
         
         <div class="form-group">
           <label>Password</label>
@@ -54,6 +64,7 @@
 import { ref } from 'vue';
 
 const username = ref('');
+const number = ref('');
 const password = ref('');
 const repeatPassword = ref('');
 const isLoading = ref(false);
@@ -77,12 +88,14 @@ const handleRegister = async () => {
       method: 'POST',
       body: {
         username: username.value,
+        number: number.value,
         password: password.value
       }
     });
     
     if (res.success) {
       username.value = '';
+      number.value = '';
       password.value = '';
       repeatPassword.value = '';
       successMsg.value = 'Account created successfully! Redirecting to login...';
@@ -133,6 +146,7 @@ h2 {
   text-align: center;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

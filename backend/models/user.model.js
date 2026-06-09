@@ -15,17 +15,21 @@ const User = sequelize.define('User', {
       notEmpty: true,
     }
   },
-  email: {
+  number: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
     validate: {
-      isEmail: true,
+      notEmpty: true,
     }
   },
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  lastActiveAt: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   timestamps: true,

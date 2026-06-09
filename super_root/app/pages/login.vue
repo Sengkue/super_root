@@ -6,11 +6,11 @@
       
       <form @submit.prevent="handleLogin" class="auth-form">
         <div class="form-group">
-          <label>Username</label>
+          <label>Username or Number</label>
           <input 
             type="text" 
             v-model="emailOrPhone" 
-            placeholder="alice"
+            placeholder="alice or 020xxxxxxxx"
             required
           />
         </div>
@@ -112,6 +112,7 @@ h2 {
   text-align: center;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

@@ -20,9 +20,11 @@ const userController = {
 
       const usersWithFollowStatus = users.map(u => {
         const userData = u.toJSON();
+        const isOnline = userData.lastActiveAt ? (new Date() - new Date(userData.lastActiveAt)) < 5 * 60 * 1000 : false;
         return {
           ...userData,
-          isFollowing: followingIds.has(userData.id)
+          isFollowing: followingIds.has(userData.id),
+          isOnline
         };
       });
 
@@ -67,13 +69,16 @@ const userController = {
         isFollowing = !!followRecord;
       }
 
+      const isOnline = user.lastActiveAt ? (new Date() - new Date(user.lastActiveAt)) < 5 * 60 * 1000 : false;
+
       res.status(200).json({ 
         success: true, 
         data: {
           ...user.toJSON(),
           followersCount,
           followingCount,
-          isFollowing
+          isFollowing,
+          isOnline
         }
       });
     } catch (error) {
@@ -85,16 +90,16 @@ const userController = {
   // Create new user (Sign up)
   createUser: async (req, res) => {
     try {
-      const { username, email, password } = req.body;
+      const { username, number, password } = req.body;
 
       // Validate basic input
-      if (!username || !email || !password) {
-        return res.status(400).json({ success: false, message: 'Please provide username, email and password' });
+      if (!username || !number || !password) {
+        return res.status(400).json({ success: false, message: 'Please provide username, number and password' });
       }
 
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await User.findOne({ where: { number } });
       if (existingUser) {
-        return res.status(409).json({ success: false, message: 'Email already in use' });
+        return res.status(409).json({ success: false, message: 'Number already in use' });
       }
 
       // Hash password
@@ -103,7 +108,7 @@ const userController = {
       // Create user
       const user = await User.create({
         username,
-        email,
+        number,
         password: hashedPassword
       });
 
@@ -113,7 +118,7 @@ const userController = {
         data: {
           id: user.id,
           username: user.username,
-          email: user.email
+          number: user.number
         }
       });
     } catch (error) {
@@ -136,7 +141,7 @@ const userController = {
       const user = await User.findOne({
         where: { 
           [Op.or]: [
-            { email: emailOrPhone },
+            { number: emailOrPhone },
             { username: emailOrPhone }
           ]
         },
@@ -173,7 +178,7 @@ const userController = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const { bio, livesIn, worksAt, profileImage, coverImage } = req.body;
+      const { bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName } = req.body;
 
       // Ensure the user exists
       const user = await User.findByPk(id);
@@ -184,9 +189,9 @@ const userController = {
       // Find or create profile
       let profile = await UserProfile.findOne({ where: { userId: id } });
       if (!profile) {
-        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage });
+        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName });
       } else {
-        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage });
+        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName });
       }
 
       // Fetch updated user with profile and counts
@@ -198,13 +203,16 @@ const userController = {
       const followersCount = await updatedUser.countFollowers();
       const followingCount = await updatedUser.countFollowing();
 
+      const isOnline = updatedUser.lastActiveAt ? (new Date() - new Date(updatedUser.lastActiveAt)) < 5 * 60 * 1000 : false;
+
       res.status(200).json({
         success: true,
         message: 'Profile updated successfully',
         data: {
           ...updatedUser.toJSON(),
           followersCount,
-          followingCount
+          followingCount,
+          isOnline
         }
       });
     } catch (error) {

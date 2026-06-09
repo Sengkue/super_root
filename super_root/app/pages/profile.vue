@@ -34,7 +34,8 @@
           <!-- Name & Bio -->
           <div class="mb-4">
             <h1 class="text-2xl font-bold text-slate-50 mb-1 flex items-center gap-2">
-              {{ targetUser?.username || 'Guest' }}
+              {{ (targetUser?.profile?.firstName || targetUser?.profile?.lastName) ? `${targetUser.profile.firstName || ''} ${targetUser.profile.lastName || ''}`.trim() : targetUser?.username || 'Guest' }}
+              <div v-if="targetUser?.isOnline" class="w-3 h-3 rounded-full bg-green-500 border border-green-700" title="Online"></div>
               <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
             </h1>
             <div class="text-sm font-medium text-slate-400 flex flex-wrap gap-2 mb-2">
@@ -77,9 +78,9 @@
               <svg class="w-5 h-5 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>
               <span>Works at <strong>{{ targetUser.profile.worksAt }}</strong></span>
             </div>
-            <div class="flex items-center gap-3" v-if="targetUser?.email">
+            <div class="flex items-center gap-3" v-if="targetUser?.profile?.email">
               <svg class="w-5 h-5 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" clip-rule="evenodd"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
-              <a href="#" class="text-blue-400 hover:underline break-all">{{ targetUser.email }}</a>
+              <a :href="`mailto:${targetUser.profile.email}`" class="text-blue-400 hover:underline break-all">{{ targetUser.profile.email }}</a>
             </div>
           </div>
         </div>
@@ -88,6 +89,20 @@
         <div v-else class="mb-4">
           <h2 class="text-xl font-bold text-slate-50 mb-4">Edit Profile</h2>
           <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-400 mb-1">First Name</label>
+                <input v-model="editForm.firstName" type="text" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="John" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-400 mb-1">Last Name</label>
+                <input v-model="editForm.lastName" type="text" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Doe" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-400 mb-1">Email</label>
+              <input v-model="editForm.email" type="email" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="john@example.com" />
+            </div>
             <div>
               <label class="block text-sm font-medium text-slate-400 mb-1">Bio</label>
               <input v-model="editForm.bio" type="text" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="A short bio" />
@@ -240,7 +255,7 @@ const allPhotos = computed(() => {
 // Profile Editing State
 const isEditingProfile = ref(false);
 const isSaving = ref(false);
-const editForm = ref({ bio: '', livesIn: '', worksAt: '', profileImage: '', coverImage: '' });
+const editForm = ref({ bio: '', livesIn: '', worksAt: '', profileImage: '', coverImage: '', email: '', firstName: '', lastName: '' });
 
 // Post Creation State
 const showCreatePost = ref(false);
@@ -360,7 +375,10 @@ const startEditing = () => {
     livesIn: targetUser.value?.profile?.livesIn || '',
     worksAt: targetUser.value?.profile?.worksAt || '',
     profileImage: targetUser.value?.profile?.profileImage || '',
-    coverImage: targetUser.value?.profile?.coverImage || ''
+    coverImage: targetUser.value?.profile?.coverImage || '',
+    email: targetUser.value?.profile?.email || '',
+    firstName: targetUser.value?.profile?.firstName || '',
+    lastName: targetUser.value?.profile?.lastName || ''
   };
   isEditingProfile.value = true;
 };

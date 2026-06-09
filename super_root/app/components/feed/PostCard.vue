@@ -35,12 +35,17 @@
         </div>
       </div>
       <template v-else>
-        <template v-for="(token, index) in contentTokens" :key="index">
-          <a v-if="token.type === 'link'" :href="token.href" target="_blank" rel="noopener noreferrer" class="post-link">
-            {{ token.value }}
-          </a>
-          <span v-else>{{ token.value }}</span>
-        </template>
+        <div :class="{ 'clamped-text': !isExpanded && isLongText }">
+          <template v-for="(token, index) in contentTokens" :key="index">
+            <a v-if="token.type === 'link'" :href="token.href" target="_blank" rel="noopener noreferrer" class="post-link">
+              {{ token.value }}
+            </a>
+            <span v-else>{{ token.value }}</span>
+          </template>
+        </div>
+        <button v-if="isLongText" @click="isExpanded = !isExpanded" class="read-more-btn">
+          {{ isExpanded ? 'Show less' : 'Read more...' }}
+        </button>
       </template>
     </div>
 
@@ -237,6 +242,12 @@ const isEditing = ref(false);
 const editContent = ref(props.post.content);
 const isSaving = ref(false);
 const showOptionsMenu = ref(false);
+const isExpanded = ref(false);
+
+const isLongText = computed(() => {
+  if (!props.post.content) return false;
+  return props.post.content.length > 300 || props.post.content.split('\n').length > 5;
+});
 
 const isMyPost = computed(() => {
   return authStore.activeUserId && String(props.post.userId) === String(authStore.activeUserId);
@@ -770,6 +781,30 @@ const sharePost = () => {
 }
 
 .post-link:hover {
+  text-decoration: underline;
+}
+
+.clamped-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.read-more-btn:hover {
+  color: var(--text-primary);
   text-decoration: underline;
 }
 

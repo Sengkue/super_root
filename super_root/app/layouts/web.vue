@@ -3,11 +3,6 @@
     <header class="flex justify-between items-center px-8 py-4 bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-20">
       <div class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Super Root</div>
       <nav class="flex gap-6 items-center">
-        <NuxtLink to="/feed?tab=all" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'all' }">All</NuxtLink>
-        <NuxtLink to="/feed?tab=following" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'following' }">Following</NuxtLink>
-        <NuxtLink to="/feed?tab=foryou" class="text-slate-400 font-medium hover:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'foryou' }">For You</NuxtLink>
-        <NuxtLink to="/profile" class="text-slate-400 font-medium hover:text-slate-50 [&.router-link-active]:text-blue-500">Profile</NuxtLink>
-        
         <div class="relative w-64 ml-2">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -23,8 +18,31 @@
         
         <div class="flex items-center gap-4 ml-4 pl-4 border-l border-slate-700">
           <template v-if="authStore.isLoggedIn">
-            <span class="text-slate-400 text-sm">Hi, {{ authStore.activeUser?.username || 'User' }}</span>
-            <button class="bg-transparent border border-slate-700 text-slate-400 px-3 py-1.5 rounded-lg text-sm hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition-colors" @click="handleLogout">Logout</button>
+            <!-- Invisible overlay to close menu -->
+            <div v-if="showUserMenu" @click="showUserMenu = false" class="fixed inset-0 z-40"></div>
+            
+            <div class="relative z-50">
+              <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors focus:outline-none bg-slate-800/50 hover:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-700">
+                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-sm text-white overflow-hidden shrink-0">
+                  <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
+                  <span v-else>{{ authStore.activeUser?.username?.charAt(0).toUpperCase() || 'U' }}</span>
+                </div>
+                <span class="text-sm font-medium">{{ authStore.activeUser?.username || 'User' }}</span>
+                <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': showUserMenu }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              
+              <div v-if="showUserMenu" class="absolute right-0 mt-3 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 transform transition-all duration-200 origin-top-right">
+                <NuxtLink to="/profile" @click="showUserMenu = false" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                  Profile
+                </NuxtLink>
+                <div class="border-t border-slate-700"></div>
+                <button @click="handleLogout" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors text-left">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                  Logout
+                </button>
+              </div>
+            </div>
           </template>
           <template v-else>
             <NuxtLink to="/login" class="text-slate-400 font-medium hover:text-slate-50">Log In</NuxtLink>
@@ -87,6 +105,7 @@ import { useAuthStore } from '~/stores/auth';
 
 const authStore = useAuthStore();
 const searchQuery = ref('');
+const showUserMenu = ref(false);
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
