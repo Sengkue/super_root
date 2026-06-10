@@ -43,6 +43,22 @@ const UserProfile = sequelize.define('UserProfile', {
   coverImage: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  language: {
+    type: DataTypes.STRING,
+    defaultValue: 'en'
+  },
+  emailNotifications: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  pushNotifications: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  isPrivate: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   timestamps: true,

@@ -1,10 +1,10 @@
 <template>
     <div class="w-full">
-      <h1 class="text-2xl font-bold text-slate-50 mb-6 flex items-center gap-2">
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-6 flex items-center gap-2">
         <span>✏️</span> Create Post
       </h1>
       
-      <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-700 p-4">
         <FeedCreatePostBox @post-created="onPostCreated" />
       </div>
     </div>

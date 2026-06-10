@@ -1,9 +1,13 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Lao:wght@100..900&display=swap');
+
+@variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-accent: #3b82f6;
   --color-accent-hover: #2563eb;
   --color-surface: #1e293b;
+  --font-sans: "Noto Sans Lao", "Noto Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 :root {
@@ -14,14 +18,13 @@
   --accent-hover: #2563eb;
   --surface-color: #1e293b;
   --border-color: #334155;
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: 'Noto Sans Lao', 'Noto Sans', system-ui, -apple-system, sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-50;
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

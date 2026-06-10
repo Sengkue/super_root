@@ -6,6 +6,7 @@ const Like = require('./like.model');
 const UserProfile = require('./userProfile.model');
 const Follow = require('./follow.model');
 const SavedPost = require('./savedPost.model');
+const Notification = require('./notification.model')(sequelize);
 
 // Define Relationships
 
@@ -49,6 +50,10 @@ SavedPost.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 Comment.hasMany(Comment, { foreignKey: 'parentId', as: 'replies' });
 Comment.belongsTo(Comment, { foreignKey: 'parentId', as: 'parent' });
 
+// User <-> Notification
+User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
+Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
   sequelize,
   User,
@@ -57,5 +62,6 @@ module.exports = {
   Comment,
   Like,
   Follow,
-  SavedPost
+  SavedPost,
+  Notification
 };

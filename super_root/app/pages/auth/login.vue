@@ -33,7 +33,7 @@
       </form>
       
       <div class="auth-footer">
-        <p>Don't have an account? <NuxtLink to="/register">Sign up</NuxtLink></p>
+        <p>Don't have an account? <NuxtLink to="/auth/register">Sign up</NuxtLink></p>
       </div>
     </div>
   </div>

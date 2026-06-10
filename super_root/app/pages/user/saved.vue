@@ -1,6 +1,6 @@
 <template>
     <div class="main-feed">
-      <h1 class="text-2xl font-bold text-slate-50 mb-6 flex items-center gap-2">
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-6 flex items-center gap-2">
         <span class="text-3xl">🔖</span> Saved Posts
       </h1>
 

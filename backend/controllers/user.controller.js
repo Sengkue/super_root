@@ -179,7 +179,7 @@ const userController = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const { bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName } = req.body;
+      const { bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate } = req.body;
 
       // Ensure the user exists
       const user = await User.findByPk(id);
@@ -190,9 +190,9 @@ const userController = {
       // Find or create profile
       let profile = await UserProfile.findOne({ where: { userId: id } });
       if (!profile) {
-        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName });
+        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate });
       } else {
-        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName });
+        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate });
       }
 
       // Fetch updated user with profile and counts
@@ -219,6 +219,36 @@ const userController = {
     } catch (error) {
       console.error('Error updating profile:', error);
       res.status(500).json({ success: false, message: 'Failed to update profile', error: error.message });
+    }
+  },
+
+  // Change Password
+  changePassword: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Current and new password are required' });
+      }
+
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Incorrect current password' });
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await user.update({ password: hashedPassword });
+
+      res.status(200).json({ success: true, message: 'Password updated successfully' });
+    } catch (error) {
+      console.error('Error changing password:', error);
+      res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
     }
   }
 };

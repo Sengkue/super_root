@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "search": "Search...",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "all": "All",
+    "following": "Following",
+    "foryou": "For You",
+    "friends": "Friends",
+    "favorites": "Favorites",
+    "saved": "Saved",
+    "settings": "Settings",
+    "menu": "Menu",
+    "about": "About App",
+    "sponsored": "Sponsored"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": {
+      "title": "Appearance",
+      "themeTitle": "Theme",
+      "themeDesc": "Choose how Super Root looks to you.",
+      "auto": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "account": {
+      "title": "Account & Privacy",
+      "passwordTitle": "Password & Security",
+      "passwordDesc": "Update your password",
+      "notificationsTitle": "Notifications",
+      "notificationsDesc": "Manage email & push alerts",
+      "privacyTitle": "Privacy",
+      "privacyDesc": "Control who sees your content"
+    },
+    "preferences": {
+      "title": "App Preferences",
+      "languageTitle": "Language"
+    },
+    "security": {
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "updateBtn": "Update Password",
+      "savingBtn": "Saving...",
+      "successMsg": "Password updated successfully",
+      "mismatchMsg": "New passwords do not match",
+      "requiredMsg": "Current and new password are required"
+    },
+    "notifications": {
+      "emailTitle": "Email Notifications",
+      "emailDesc": "Receive updates directly to your inbox.",
+      "pushTitle": "Push Notifications",
+      "pushDesc": "Get alerts on your device."
+    },
+    "privacy": {
+      "privateAccount": "Private Account",
+      "privateDesc": "When your account is private, only people you approve can see your posts."
+    },
+    "messages": {
+      "saved": "Preferences saved successfully"
+    }
+  }
+}

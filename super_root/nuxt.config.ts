@@ -7,7 +7,21 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@nuxtjs/color-mode', '@nuxtjs/i18n'],
+  colorMode: {
+    classSuffix: ''
+  },
+  i18n: {
+    locales: [
+      { code: 'en', file: 'en.json' },
+      { code: 'lo', file: 'lo.json' },
+      { code: 'hmn', file: 'hmn.json' }
+    ],
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    lazy: true,
+    langDir: 'locales/'
+  },
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
@@ -16,6 +30,9 @@ export default defineNuxtConfig({
   },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
+  },
+  devServer: {
+    host: '0.0.0.0'
   },
   runtimeConfig: {
     imgbbApiKey: process.env.NUXT_IMGBB_API_KEY || '', // Private key

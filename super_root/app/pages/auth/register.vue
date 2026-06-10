@@ -54,7 +54,7 @@
       </form>
       
       <div class="auth-footer">
-        <p>Already have an account? <NuxtLink to="/login">Log in</NuxtLink></p>
+        <p>Already have an account? <NuxtLink to="/auth/login">Log in</NuxtLink></p>
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@ const handleRegister = async () => {
       successMsg.value = 'Account created successfully! Redirecting to login...';
       
       setTimeout(() => {
-        navigateTo('/login');
+        navigateTo('/auth/login');
       }, 2000);
     }
   } catch (err) {

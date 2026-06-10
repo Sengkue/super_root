@@ -10,16 +10,16 @@
           v-model="searchInput" 
           @keyup.enter="handleSearchSubmit" 
           placeholder="Search for users or posts..." 
-          class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-lg rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block pl-12 p-4 transition-colors shadow-sm"
+          class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-lg rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block pl-12 p-4 transition-colors shadow-sm"
         >
       </div>
       
-      <h1 v-if="query" class="text-xl font-bold text-slate-300 mt-6 px-1">
+      <h1 v-if="query" class="text-xl font-bold text-slate-700 dark:text-slate-300 mt-6 px-1">
         Results for "{{ query }}"
       </h1>
     </div>
 
-    <div v-if="pending" class="text-center py-12 text-slate-400 text-lg">
+    <div v-if="pending" class="text-center py-12 text-slate-600 dark:text-slate-400 text-lg">
       <div class="inline-block animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
       <p>Searching...</p>
     </div>
@@ -37,25 +37,25 @@
 
       <!-- Users Results -->
       <div v-if="users.length > 0" class="mb-10">
-        <h2 class="text-xl font-bold text-slate-300 mb-4 px-2 border-l-4 border-blue-500">Users</h2>
+        <h2 class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-4 px-2 border-l-4 border-blue-500">Users</h2>
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          <div v-for="user in users" :key="user.id" class="bg-slate-800 rounded-xl border border-slate-700 shadow-sm overflow-hidden hover:border-slate-600 transition-colors flex flex-col">
-            <div class="h-16 bg-slate-700 relative" :style="user.profile?.coverImage ? `background-image: url('${user.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !user.profile?.coverImage}"></div>
+          <div v-for="user in users" :key="user.id" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm overflow-hidden hover:border-slate-400 dark:border-slate-600 transition-colors flex flex-col">
+            <div class="h-16 bg-slate-100 dark:bg-slate-700 relative" :style="user.profile?.coverImage ? `background-image: url('${user.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !user.profile?.coverImage}"></div>
             <div class="px-4 pb-4 flex-1 flex flex-col relative">
               <div class="relative -mt-8 mb-2">
-                <div class="w-16 h-16 rounded-full border-4 border-slate-800 bg-slate-700 flex items-center justify-center shadow-md overflow-hidden" :class="{'bg-gradient-to-br from-blue-500 to-pink-500': !user.profile?.profileImage}">
+                <div class="w-16 h-16 rounded-full border-4 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-700 flex items-center justify-center shadow-md overflow-hidden" :class="{'bg-gradient-to-br from-blue-500 to-pink-500': !user.profile?.profileImage}">
                   <img v-if="user.profile?.profileImage" :src="user.profile.profileImage" class="w-full h-full object-cover" />
-                  <span v-else class="text-2xl font-bold text-white">{{ user.username.charAt(0).toUpperCase() }}</span>
+                  <span v-else class="text-2xl font-bold text-slate-900 dark:text-white">{{ user.username.charAt(0).toUpperCase() }}</span>
                 </div>
               </div>
               <div class="mb-3 flex-1 text-center">
-                <NuxtLink :to="`/profile?id=${user.id}`" class="text-lg font-bold text-slate-50 hover:text-blue-400 transition-colors block mb-0.5 truncate">
+                <NuxtLink :to="`/user/profile?id=${user.id}`" class="text-lg font-bold text-slate-900 dark:text-slate-50 hover:text-blue-400 transition-colors block mb-0.5 truncate">
                   {{ user.username }}
                 </NuxtLink>
-                <p class="text-xs text-slate-400 line-clamp-1" v-if="user.profile?.bio">{{ user.profile.bio }}</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-1" v-if="user.profile?.bio">{{ user.profile.bio }}</p>
               </div>
               <div class="flex flex-col gap-2 mt-auto pt-3 border-t border-slate-700/50">
-                <NuxtLink :to="`/profile?id=${user.id}`" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 py-1.5 px-2 rounded-lg font-bold text-center text-xs transition-colors">
+                <NuxtLink :to="`/user/profile?id=${user.id}`" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 py-1.5 px-2 rounded-lg font-bold text-center text-xs transition-colors">
                   View Profile
                 </NuxtLink>
               </div>
@@ -66,7 +66,7 @@
 
       <!-- Posts Results -->
       <div v-if="posts.length > 0">
-        <h2 class="text-xl font-bold text-slate-300 mb-4 px-2 border-l-4 border-purple-500">Posts</h2>
+        <h2 class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-4 px-2 border-l-4 border-purple-500">Posts</h2>
         <div class="posts-list">
           <FeedPostCard 
             v-for="post in posts" 

@@ -67,13 +67,13 @@
           </div>
           
           <div class="modal-add-to-post">
-            <span class="add-text font-semibold text-slate-300">Add to your post</span>
+            <span class="add-text font-semibold text-slate-700 dark:text-slate-300">Add to your post</span>
             <div class="add-icons">
-              <button class="add-icon-btn hover:bg-slate-700 p-2 rounded-full transition-colors" @click="$refs.fileInput.click()" title="Attach Images"><span class="text-2xl leading-none text-green-500">📷</span></button>
-              <button class="add-icon-btn hover:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-blue-500">👤</span></button>
-              <button class="add-icon-btn hover:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-yellow-500">😊</span></button>
-              <button class="add-icon-btn hover:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-red-500">📍</span></button>
-              <button class="add-icon-btn hover:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-slate-400">⋯</span></button>
+              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors" @click="$refs.fileInput.click()" title="Attach Images"><span class="text-2xl leading-none text-green-500">📷</span></button>
+              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-blue-500">👤</span></button>
+              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-yellow-500">😊</span></button>
+              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-red-500">📍</span></button>
+              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-slate-600 dark:text-slate-400">⋯</span></button>
             </div>
             <input type="file" ref="fileInput" @change="handleFileSelect" accept="image/*" multiple style="display: none;" />
           </div>

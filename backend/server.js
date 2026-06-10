@@ -9,6 +9,7 @@ const User = require('./models/user.model');
 // Import routes
 const userRoutes = require('./routes/user.routes');
 const postRoutes = require('./routes/post.routes');
+const notificationRoutes = require('./routes/notification.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,6 +25,7 @@ app.use(trackActive);
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 const followRoutes = require('./routes/follow.routes');
 app.use('/api/follows', followRoutes);

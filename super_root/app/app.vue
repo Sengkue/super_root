@@ -3,12 +3,12 @@
     <!-- Global App Loading Splash Screen -->
     <div 
       v-if="isAppLoading" 
-      class="fixed inset-0 z-[99999] bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-500"
+      class="fixed inset-0 z-[99999] bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-500"
       :class="{ 'opacity-0 pointer-events-none': fadeOutSplash }"
     >
       <div class="text-6xl mb-6 animate-bounce" style="animation-duration: 1s;">🌱</div>
       <div class="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-8">Super Root</div>
-      <div class="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+      <div class="w-48 h-1.5 bg-white dark:bg-slate-800 rounded-full overflow-hidden">
         <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full loading-bar"></div>
       </div>
     </div>
@@ -58,7 +58,7 @@ onMounted(() => {
 });
 
 const currentLayout = computed(() => {
-  if (route.path === '/login' || route.path === '/register') return 'blank';
+  if (route.path === '/auth/login' || route.path === '/auth/register') return 'blank';
   return windowWidth.value < 768 ? 'app' : 'web';
 });
 

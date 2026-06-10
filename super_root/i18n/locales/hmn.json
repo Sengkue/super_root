@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "search": "Nrhiav...",
+    "profile": "Piv txwv",
+    "logout": "Tawm mus",
+    "login": "Nkag mus",
+    "signup": "Zwm npe",
+    "all": "Tag nrho",
+    "following": "Ua raws",
+    "foryou": "Rau koj",
+    "friends": "Phooj ywg",
+    "favorites": "Nyiam",
+    "saved": "Khaws tseg",
+    "settings": "Chaw Teeb Tsa",
+    "menu": "Cov Ntawv Qhia",
+    "about": "Txog App",
+    "sponsored": "Kev Txhawb"
+  },
+  "settings": {
+    "title": "Chaw Teeb Tsa",
+    "appearance": {
+      "title": "Cov Xim Nyob Rau Sab Nraud",
+      "themeTitle": "Kev Cai",
+      "themeDesc": "Xaiv yuav qhia Super Root rau koj li cas.",
+      "auto": "Piav Nws Tus Kheej",
+      "light": "Pom Kev",
+      "dark": "Tsaus Ntuj"
+    },
+    "account": {
+      "title": "Tus Account & Kev Ntiag Tug",
+      "passwordTitle": "Kev Nyab Xeeb & Password",
+      "passwordDesc": "Kho koj lub password",
+      "notificationsTitle": "Kev Ceeb Toom",
+      "notificationsDesc": "Txhim kho kev ceeb toom email & tshuab",
+      "privacyTitle": "Kev Ntiag Tug",
+      "privacyDesc": "Tswj leej twg pom koj cov tso tawm"
+    },
+    "preferences": {
+      "title": "Yam Nyiam Ntawm App",
+      "languageTitle": "Hom Lus"
+    },
+    "security": {
+      "currentPassword": "Lub Password Tam Sim No",
+      "newPassword": "Lub Password Tshiab",
+      "confirmPassword": "Kev Pom Zoo Password Tshiab",
+      "updateBtn": "Hloov Password",
+      "savingBtn": "Khaws...",
+      "successMsg": "Kho password tau zoo",
+      "mismatchMsg": "Password tshiab tsis sib xws",
+      "requiredMsg": "Yuav tsum muaj password qub thiab tshiab"
+    },
+    "notifications": {
+      "emailTitle": "Email Ceeb Toom",
+      "emailDesc": "Txais xov xwm tshiab rau koj email.",
+      "pushTitle": "Tshuab Ceeb Toom",
+      "pushDesc": "Txais ceeb toom hauv xov tooj."
+    },
+    "privacy": {
+      "privateAccount": "Tus Account Ntiag Tug",
+      "privateDesc": "Thaum koj account ntiag tug, tsuas yog cov uas koj pom zoo xwb thiaj li pom koj cov ntawv."
+    },
+    "messages": {
+      "saved": "Khaws yam ntxim nyiam tiav lawm"
+    }
+  }
+}
