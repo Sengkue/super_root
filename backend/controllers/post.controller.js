@@ -1,4 +1,5 @@
 const { Post, Comment, Like, User, SavedPost } = require('../models');
+const { createNotification } = require('../utils/notification');
 
 // Helper to get active user ID from headers or fallback to Alice
 const getActiveUserId = async (req) => {
@@ -86,6 +87,30 @@ const postController = {
     }
   },
 
+  // Get a single post by ID
+  getPostById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const post = await Post.findByPk(id, {
+        include: [
+          { model: User, as: 'user', attributes: ['id', 'username'] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: Like, as: 'likes', attributes: ['id', 'userId'] },
+          { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
+        ]
+      });
+      
+      if (!post) {
+        return res.status(404).json({ success: false, message: 'Post not found' });
+      }
+      
+      res.status(200).json({ success: true, data: post });
+    } catch (error) {
+      console.error('Error fetching post by id:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch post' });
+    }
+  },
+
   // Create a new post
   createPost: async (req, res) => {
     try {
@@ -140,6 +165,16 @@ const postController = {
         include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
       });
 
+      // Send Notification to post owner
+      if (post.userId !== userId) {
+        await createNotification({
+          userId: post.userId,
+          type: 'comment',
+          message: `${createdComment.user.username} commented on your post`,
+          link: `/post/${postId}`
+        });
+      }
+
       res.status(201).json({ success: true, data: createdComment });
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -160,6 +195,19 @@ const postController = {
         res.status(200).json({ success: true, message: 'Unliked post', action: 'unliked' });
       } else {
         await Like.create({ postId, userId });
+        
+        // Notification
+        const post = await Post.findByPk(postId);
+        if (post && post.userId !== userId) {
+          const user = await User.findByPk(userId);
+          await createNotification({
+            userId: post.userId,
+            type: 'like',
+            message: `${user.username} liked your post`,
+            link: `/post/${postId}`
+          });
+        }
+        
         res.status(201).json({ success: true, message: 'Liked post', action: 'liked' });
       }
     } catch (error) {

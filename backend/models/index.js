@@ -7,6 +7,7 @@ const UserProfile = require('./userProfile.model');
 const Follow = require('./follow.model');
 const SavedPost = require('./savedPost.model');
 const Notification = require('./notification.model')(sequelize);
+const PushSubscription = require('./pushSubscription.model')(sequelize);
 
 // Define Relationships
 
@@ -54,6 +55,10 @@ Comment.belongsTo(Comment, { foreignKey: 'parentId', as: 'parent' });
 User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
 Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// User <-> PushSubscription
+User.hasMany(PushSubscription, { foreignKey: 'userId', as: 'pushSubscriptions' });
+PushSubscription.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 module.exports = {
   sequelize,
   User,
@@ -63,5 +68,6 @@ module.exports = {
   Like,
   Follow,
   SavedPost,
-  Notification
+  Notification,
+  PushSubscription
 };

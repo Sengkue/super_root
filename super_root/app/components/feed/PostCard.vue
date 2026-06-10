@@ -528,11 +528,11 @@ const showShareMenu = ref(false);
 
 const postUrl = computed(() => {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-  return encodeURIComponent(`${origin}/feed?postId=${props.post.id}`);
+  return encodeURIComponent(`${origin}/post/${props.post.id}`);
 });
 
 const handleShareClick = async () => {
-  const url = typeof window !== 'undefined' ? window.location.origin + '/feed?postId=' + props.post.id : 'http://localhost:3000';
+  const url = typeof window !== 'undefined' ? window.location.origin + '/post/' + props.post.id : 'http://localhost:3000/post/' + props.post.id;
   
   // Best Practice: Advanced Native OS Sharing (Web Share API)
   if (navigator.share) {
@@ -555,7 +555,7 @@ const handleShareClick = async () => {
 const copyLink = async () => {
   try {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-    await navigator.clipboard.writeText(`${origin}/feed?postId=${props.post.id}`);
+    await navigator.clipboard.writeText(`${origin}/post/${props.post.id}`);
     alert('Link copied to clipboard!');
     showShareMenu.value = false;
   } catch (err) {

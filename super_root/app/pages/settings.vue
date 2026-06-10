@@ -26,7 +26,7 @@
             
             <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 w-full sm:w-auto">
               <button 
-                @click="$colorMode.preference = 'system'" 
+                @click="setTheme('system')" 
                 class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 :class="$colorMode.preference === 'system' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
               >
@@ -34,7 +34,7 @@
                 {{ $t('settings.appearance.auto') }}
               </button>
               <button 
-                @click="$colorMode.preference = 'light'" 
+                @click="setTheme('light')" 
                 class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 :class="$colorMode.preference === 'light' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
               >
@@ -42,7 +42,7 @@
                 {{ $t('settings.appearance.light') }}
               </button>
               <button 
-                @click="$colorMode.preference = 'dark'" 
+                @click="setTheme('dark')" 
                 class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 :class="$colorMode.preference === 'dark' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
               >
@@ -249,6 +249,7 @@ const handleBack = () => {
 
 const profileForm = ref({
   language: 'en',
+  theme: 'system',
   emailNotifications: true,
   pushNotifications: true,
   isPrivate: false
@@ -258,8 +259,15 @@ onMounted(() => {
   if (authStore.activeUserObj?.profile) {
     const p = authStore.activeUserObj.profile;
     profileForm.value.language = p.language || 'en';
+    profileForm.value.theme = p.theme || 'system';
+    
     // Sync Nuxt i18n locale
     setLocale(profileForm.value.language);
+    
+    // Sync Color Mode
+    const colorMode = useColorMode();
+    colorMode.preference = profileForm.value.theme;
+    
     // Handle booleans safely since they might be undefined
     profileForm.value.emailNotifications = p.emailNotifications !== false;
     profileForm.value.pushNotifications = p.pushNotifications !== false;
@@ -290,6 +298,13 @@ const saveProfile = async () => {
 const setLanguage = (code) => {
   profileForm.value.language = code;
   setLocale(code);
+  saveProfile();
+};
+
+const setTheme = (themeMode) => {
+  const colorMode = useColorMode();
+  colorMode.preference = themeMode;
+  profileForm.value.theme = themeMode;
   saveProfile();
 };
 

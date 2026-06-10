@@ -16,6 +16,11 @@
     "about": "Txog App",
     "sponsored": "Kev Txhawb"
   },
+  "notifications_ui": {
+    "title": "Kev Ceeb Toom",
+    "empty": "Tsis muaj kev ceeb toom tshiab",
+    "markAllRead": "Cim tias nyeem tag nrho"
+  },
   "settings": {
     "title": "Chaw Teeb Tsa",
     "appearance": {

@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   
   if (!authStore.isLoggedIn) {
     // Routes that are always allowed for guests
-    const allowedPaths = ['/login', '/register', '/', '/search'];
+    const allowedPaths = ['/auth/login', '/auth/register', '/', '/search'];
     
     if (allowedPaths.includes(to.path)) {
       return;
@@ -20,6 +20,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
     }
     
     // Redirect to login for all other routes if not logged in
-    return navigateTo('/login');
+    return navigateTo('/auth/login');
   }
 });

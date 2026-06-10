@@ -66,7 +66,7 @@ export const useAuthStore = defineStore('auth', {
     
     requireAuth() {
       if (!this.isLoggedIn) {
-        navigateTo('/login');
+        navigateTo('/auth/login');
       }
       return this.isLoggedIn;
     }

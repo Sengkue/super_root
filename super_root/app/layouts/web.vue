@@ -18,9 +18,12 @@
         
         <div class="flex items-center gap-4 ml-4 pl-4 border-l border-slate-300 dark:border-slate-700">
           <template v-if="authStore.isLoggedIn">
-            <!-- Invisible overlay to close menu -->
-            <div v-if="showUserMenu" @click="showUserMenu = false" class="fixed inset-0 z-40"></div>
+            <!-- Invisible overlay to close menus -->
+            <div v-if="showUserMenu || showNotifications" @click="closeMenus" class="fixed inset-0 z-40"></div>
             
+            <!-- Notifications Bell -->
+            <NotificationBell class="mr-2" ref="notifBell" @toggled="onNotifToggled" />
+
             <div class="relative z-50">
               <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors focus:outline-none bg-slate-800/50 hover:bg-white dark:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-300 dark:border-slate-700">
                 <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-900 dark:text-white overflow-hidden shrink-0">
@@ -75,6 +78,9 @@
             <NuxtLink to="/settings" class="nav-item" :class="{ 'active': $route.path === '/settings' }">
               <span class="icon">⚙️</span> {{ $t('nav.settings') }}
             </NuxtLink>
+            <button v-if="showInstallAppButton" @click="installPWA" class="nav-item text-left w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold hover:from-blue-500 hover:to-purple-500 border-none shadow-md">
+              <span class="icon">📱</span> Install App
+            </button>
           </nav>
         </aside>
 
@@ -100,12 +106,43 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { useApi } from '#imports';
 
 const authStore = useAuthStore();
+const $api = useApi();
 const searchQuery = ref('');
 const showUserMenu = ref(false);
+const notifBell = ref(null);
+
+// PWA Install State
+const deferredPrompt = ref(null);
+const showInstallAppButton = ref(false);
+
+const closeMenus = () => {
+  showUserMenu.value = false;
+  if (notifBell.value) notifBell.value.closeMenu();
+};
+
+const onNotifToggled = (isOpen) => {
+  if (isOpen) showUserMenu.value = false;
+};
+
+// Utility functions specific to this layout can go here if needed
+
+onMounted(() => {
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt.value = e;
+    showInstallAppButton.value = true;
+  });
+});
+
+onUnmounted(() => {
+  // Any cleanup
+});
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
@@ -114,8 +151,19 @@ const handleSearch = () => {
 };
 
 const handleLogout = () => {
+  closeMenus();
   authStore.logout();
   navigateTo('/auth/login');
+};
+
+const installPWA = async () => {
+  if (!deferredPrompt.value) return;
+  deferredPrompt.value.prompt();
+  const { outcome } = await deferredPrompt.value.userChoice;
+  if (outcome === 'accepted') {
+    showInstallAppButton.value = false;
+  }
+  deferredPrompt.value = null;
 };
 </script>
 

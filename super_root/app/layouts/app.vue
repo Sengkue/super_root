@@ -3,7 +3,10 @@
     <!-- Top Header (TikTok Style) -->
     <header class="sticky top-0 z-40 bg-white dark:bg-black/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div class="flex justify-between items-center px-4 py-3 relative">
-        <div class="w-8"></div> <!-- Spacer for center alignment -->
+        <ClientOnly>
+          <NotificationBell v-if="authStore.isLoggedIn" alignLeft />
+          <div v-else class="w-8"></div>
+        </ClientOnly>
         
         <nav class="flex gap-4 font-bold text-sm tracking-wide">
           <NuxtLink to="/feed?tab=all" class="text-slate-600 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white border-b-2 border-white pb-1': $route.path === '/feed' && ($route.query.tab === 'all' || !$route.query.tab) }">All</NuxtLink>
@@ -52,3 +55,9 @@
     </nav>
   </div>
 </template>
+
+<script setup>
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore();
+</script>

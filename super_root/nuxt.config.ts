@@ -29,10 +29,26 @@ export default defineNuxtConfig({
     ],
   },
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: 'page', mode: 'out-in' },
+    head: {
+      link: [
+        { rel: 'manifest', href: '/manifest.json' },
+        { rel: 'icon', type: 'image/png', href: '/icon-192.png' }
+      ],
+      meta: [
+        { name: 'theme-color', content: '#0f172a' }
+      ]
+    }
   },
   devServer: {
     host: '0.0.0.0'
+  },
+  routeRules: {
+    '/api/**': {
+      proxy: process.env.NUXT_PUBLIC_API_BASE 
+        ? `${process.env.NUXT_PUBLIC_API_BASE.replace(/\/api$/, '')}/api/**`
+        : 'http://localhost:3001/api/**'
+    }
   },
   runtimeConfig: {
     imgbbApiKey: process.env.NUXT_IMGBB_API_KEY || '', // Private key

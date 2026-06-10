@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Notification } = require('../models');
+const { createNotification } = require('../utils/notification');
 
 // Fetch notifications for a specific user
 router.get('/:userId', async (req, res) => {
@@ -22,12 +23,13 @@ router.get('/:userId', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { userId, type, message, link } = req.body;
-    const notification = await Notification.create({
+    const notification = await createNotification({
       userId,
       type,
       message,
       link
     });
+
     res.json({ success: true, data: notification });
   } catch (error) {
     console.error('Error creating notification:', error);

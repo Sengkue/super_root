@@ -16,6 +16,11 @@
     "about": "ກ່ຽວກັບແອັບ",
     "sponsored": "ຜູ້ສະໜັບສະໜູນ"
   },
+  "notifications_ui": {
+    "title": "ການແຈ້ງເຕືອນ",
+    "empty": "ບໍ່ມີການແຈ້ງເຕືອນໃໝ່",
+    "markAllRead": "ໝາຍວ່າອ່ານແລ້ວທັງໝົດ"
+  },
   "settings": {
     "title": "ການຕັ້ງຄ່າ",
     "appearance": {

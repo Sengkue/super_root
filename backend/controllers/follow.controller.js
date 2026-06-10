@@ -1,4 +1,5 @@
 const { User, Follow } = require('../models');
+const { createNotification } = require('../utils/notification');
 
 const followController = {
   followUser: async (req, res) => {
@@ -9,9 +10,21 @@ const followController = {
         return res.status(400).json({ success: false, message: 'Missing user IDs' });
       }
 
-      await Follow.findOrCreate({
+      const [follow, created] = await Follow.findOrCreate({
         where: { followerId, followingId }
       });
+
+      if (created) {
+        const follower = await User.findByPk(followerId);
+        if (follower) {
+          await createNotification({
+            userId: followingId,
+            type: 'follow',
+            message: `${follower.username} started following you`,
+            link: `/user/profile?id=${followerId}`
+          });
+        }
+      }
 
       res.status(200).json({ success: true, message: 'User followed successfully' });
     } catch (error) {

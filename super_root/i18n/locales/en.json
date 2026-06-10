@@ -16,6 +16,11 @@
     "about": "About App",
     "sponsored": "Sponsored"
   },
+  "notifications_ui": {
+    "title": "Notifications",
+    "empty": "No new notifications",
+    "markAllRead": "Mark all as read"
+  },
   "settings": {
     "title": "Settings",
     "appearance": {
