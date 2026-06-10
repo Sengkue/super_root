@@ -111,6 +111,42 @@ const postController = {
     }
   },
 
+  // Get a specific comment thread (parent and replies)
+  getCommentThread: async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const parentComment = await Comment.findByPk(id, {
+        include: [
+          { model: User, as: 'user', attributes: ['id', 'username'] },
+          { model: Post, as: 'post', attributes: ['id'], include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] }
+        ]
+      });
+      
+      if (!parentComment) {
+        return res.status(404).json({ success: false, message: 'Comment not found' });
+      }
+      
+      const replies = await Comment.findAll({
+        where: { parentId: id },
+        order: [['createdAt', 'ASC']],
+        include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
+      });
+      
+      // We send it back structured as a thread
+      res.status(200).json({ 
+        success: true, 
+        data: {
+          ...parentComment.toJSON(),
+          replies
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching comment thread:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch comment thread' });
+    }
+  },
+
   // Create a new post
   createPost: async (req, res) => {
     try {
@@ -165,14 +201,30 @@ const postController = {
         include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
       });
 
-      // Send Notification to post owner
-      if (post.userId !== userId) {
-        await createNotification({
-          userId: post.userId,
-          type: 'comment',
-          message: `${createdComment.user.username} commented on your post`,
-          link: `/post/${postId}`
-        });
+      // Notification Logic
+      const commentPreview = content.length > 30 ? content.substring(0, 30) + '...' : content;
+      
+      if (parentId) {
+        // It's a reply to a comment, notify the parent comment owner
+        const parentComment = await Comment.findByPk(parentId);
+        if (parentComment && parentComment.userId !== userId) {
+          await createNotification({
+            userId: parentComment.userId,
+            type: 'comment',
+            message: `${createdComment.user.username} replied to your comment: "${commentPreview}"`,
+            link: `/comment/${parentId}#reply-${createdComment.id}`
+          });
+        }
+      } else {
+        // It's a top-level comment, notify the post owner
+        if (post.userId !== userId) {
+          await createNotification({
+            userId: post.userId,
+            type: 'comment',
+            message: `${createdComment.user.username} commented: "${commentPreview}"`,
+            link: `/post/${postId}#comment-${createdComment.id}`
+          });
+        }
       }
 
       res.status(201).json({ success: true, data: createdComment });
@@ -200,10 +252,11 @@ const postController = {
         const post = await Post.findByPk(postId);
         if (post && post.userId !== userId) {
           const user = await User.findByPk(userId);
+          const postPreview = post.content ? (post.content.length > 30 ? post.content.substring(0, 30) + '...' : post.content) : 'your post';
           await createNotification({
             userId: post.userId,
             type: 'like',
-            message: `${user.username} liked your post`,
+            message: `${user.username} liked: "${postPreview}"`,
             link: `/post/${postId}`
           });
         }

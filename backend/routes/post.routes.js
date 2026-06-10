@@ -6,6 +6,7 @@ const postController = require('../controllers/post.controller');
 router.get('/users', postController.getAllUsers); // For user switcher
 router.get('/user/:userId', postController.getUserPosts); // For profile
 router.get('/saved', postController.getSavedPosts); // For saved page
+router.get('/comments/:id/thread', postController.getCommentThread); // Get comment thread
 router.get('/:id', postController.getPostById); // Get a single post
 router.get('/', postController.getFeed);
 router.post('/', postController.createPost);

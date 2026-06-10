@@ -165,7 +165,7 @@
         <div v-for="comment in commentTree" :key="comment.id">
           
           <!-- Parent Comment -->
-          <div class="comment">
+          <div class="comment" :id="'comment-' + comment.id">
             <div class="comment-bubble">
               <strong>{{ comment.user?.username || 'User' }}</strong>
               <div class="comment-text">{{ comment.content }}</div>
@@ -185,7 +185,7 @@
 
           <!-- Replies Container -->
           <div class="replies" v-if="comment.replies && comment.replies.length > 0 && expandedCommentIds.includes(comment.id)">
-            <div class="comment reply" v-for="reply in comment.replies" :key="reply.id">
+            <div class="comment reply" v-for="reply in comment.replies" :key="reply.id" :id="'comment-' + reply.id">
               <div class="comment-bubble">
                 <strong>{{ reply.user?.username || 'User' }}</strong>
                 <div class="comment-text">{{ reply.content }}</div>
@@ -225,8 +225,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
+
+const route = useRoute();
 
 const props = defineProps(['post']);
 const emit = defineEmits(['refresh']);
@@ -594,6 +597,40 @@ const submitComment = async (parentId) => {
 const sharePost = () => {
   alert('Link copied to clipboard! (Simulated Share)');
 };
+
+onMounted(() => {
+  if (route.hash && route.hash.startsWith('#comment-')) {
+    const commentId = parseInt(route.hash.replace('#comment-', ''), 10);
+    const allComments = props.post.comments || [];
+    const targetComment = allComments.find(c => c.id === commentId);
+    
+    if (targetComment) {
+      // It belongs to this post!
+      showComments.value = true;
+      
+      // If it's a reply, ensure the parent is expanded
+      if (targetComment.parentId) {
+        if (!expandedCommentIds.value.includes(targetComment.parentId)) {
+          expandedCommentIds.value.push(targetComment.parentId);
+        }
+      }
+      
+      // Scroll to it and highlight
+      nextTick(() => {
+        setTimeout(() => {
+          const el = document.getElementById(`comment-${commentId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlight-comment');
+            setTimeout(() => {
+              el.classList.remove('highlight-comment');
+            }, 3000);
+          }
+        }, 300); // slight delay to ensure DOM and transitions finish
+      });
+    }
+  }
+});
 </script>
 
 <style scoped>
@@ -604,6 +641,16 @@ const sharePost = () => {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes highlight-fade {
+  0% { background-color: rgba(59, 130, 246, 0.3); }
+  100% { background-color: transparent; }
+}
+
+.highlight-comment {
+  animation: highlight-fade 3s ease-out;
+  border-radius: 0.5rem;
 }
 
 .post-header {
