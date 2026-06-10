@@ -193,14 +193,19 @@ const submitReply = async () => {
   }
 };
 
-onMounted(() => {
-  // Check for auto-scroll hash
+const handleHashScroll = () => {
   if (route.hash && route.hash.startsWith('#reply-')) {
     const checkReady = setInterval(() => {
       if (!pending.value && commentData.value) {
         clearInterval(checkReady);
         nextTick(() => {
           setTimeout(() => {
+            const replyId = route.hash.substring(7);
+            const targetReply = commentData.value.replies?.find(r => String(r.id) === String(replyId));
+            if (targetReply) {
+               prepareReply(targetReply.user?.username);
+            }
+            
             const el = document.getElementById(route.hash.substring(1));
             if (el) {
               el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -218,6 +223,15 @@ onMounted(() => {
     // Clear interval after 5 seconds just in case
     setTimeout(() => clearInterval(checkReady), 5000);
   }
+};
+
+watch(() => route.hash, () => {
+  handleHashScroll();
+});
+
+onMounted(() => {
+  // Check for auto-scroll hash
+  handleHashScroll();
 });
 </script>
 

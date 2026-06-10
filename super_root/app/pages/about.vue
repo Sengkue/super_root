@@ -18,6 +18,7 @@ useHead({
 </script>
 
 <style scoped>
+@reference "../../assets/css/main.css";
 .about-page {
   max-width: 800px;
   margin: 0 auto;
@@ -32,16 +33,16 @@ useHead({
 h2 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: var(--text-primary);
+  @apply text-slate-900 dark:text-white;
 }
 
 .content {
-  background: var(--surface-color);
+  @apply bg-white dark:bg-slate-800;
   padding: 2rem;
   border-radius: 1rem;
-  border: 1px solid var(--border-color);
+  @apply border border-slate-200 dark:border-slate-700;
   line-height: 1.8;
-  color: var(--text-secondary);
+  @apply text-slate-600 dark:text-slate-300;
 }
 
 .content p {

@@ -24,13 +24,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useRequestHeaders } from '#app';
+import { useColorMode, useI18n } from '#imports';
 
 const route = useRoute();
 const authStore = useAuthStore();
+const colorMode = useColorMode();
+const { setLocale, locale } = useI18n();
 
 // Server-side user-agent detection to prevent hydration flicker!
 const headers = useRequestHeaders(['user-agent']);
@@ -69,6 +72,18 @@ authStore.fetchUsers();
 if (authStore.activeUserId && !authStore.activeUserObj) {
   authStore.fetchCurrentUser();
 }
+
+// Watch user profile to sync theme and language globally from database
+watch(() => authStore.activeUserObj, (newUser) => {
+  if (newUser?.profile) {
+    if (newUser.profile.theme && colorMode.preference !== newUser.profile.theme) {
+      colorMode.preference = newUser.profile.theme;
+    }
+    if (newUser.profile.language && locale.value !== newUser.profile.language) {
+      setLocale(newUser.profile.language);
+    }
+  }
+}, { immediate: true, deep: true });
 </script>
 
 <style>

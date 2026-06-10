@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">
-    <header class="flex justify-between items-center px-8 py-4 bg-slate-800/80 backdrop-blur-md border-b border-slate-300 dark:border-slate-700 sticky top-0 z-20">
+    <header class="flex justify-between items-center px-8 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20">
       <div class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Super Root</div>
       <nav class="flex gap-6 items-center">
         <div class="relative w-64 ml-2">
@@ -12,7 +12,7 @@
             v-model="searchQuery" 
             @keyup.enter="handleSearch" 
             :placeholder="$t('nav.search')" 
-            class="w-full bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-9 p-1.5 transition-colors"
+            class="w-full bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-9 p-1.5 transition-colors"
           >
         </div>
         
@@ -25,7 +25,7 @@
             <NotificationBell class="mr-2" ref="notifBell" @toggled="onNotifToggled" />
 
             <div class="relative z-50">
-              <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors focus:outline-none bg-slate-800/50 hover:bg-white dark:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-300 dark:border-slate-700">
+              <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors focus:outline-none bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-300 dark:border-slate-700">
                 <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-900 dark:text-white overflow-hidden shrink-0">
                   <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
                   <span v-else>{{ authStore.activeUser?.username?.charAt(0).toUpperCase() || 'U' }}</span>
@@ -168,6 +168,8 @@ const installPWA = async () => {
 </script>
 
 <style scoped>
+@reference "../assets/css/main.css";
+
 .feed-layout {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr) 250px;
@@ -194,10 +196,11 @@ const installPWA = async () => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: var(--surface-color);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700;
   padding: 1rem;
   border-radius: 1rem;
-  border: 1px solid var(--border-color);
+  border-width: 1px;
+  border-style: solid;
 }
 
 .nav-item {
@@ -207,21 +210,18 @@ const installPWA = async () => {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  color: var(--text-secondary);
+  @apply text-slate-600 dark:text-slate-400;
   font-weight: 500;
   transition: all 0.2s;
   text-decoration: none;
 }
 
 .nav-item:hover, .nav-item.active {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  @apply bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-slate-50;
 }
 
 .nav-item.active {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-  font-weight: 600;
+  @apply bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500 font-semibold;
 }
 
 .icon {
@@ -233,25 +233,26 @@ const installPWA = async () => {
 }
 
 .widget {
-  background: var(--surface-color);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700;
   padding: 1.5rem;
   border-radius: 1rem;
-  border: 1px solid var(--border-color);
+  border-width: 1px;
+  border-style: solid;
 }
 
 .widget h3 {
   font-size: 1rem;
-  color: var(--text-secondary);
+  @apply text-slate-600 dark:text-slate-400;
   margin-bottom: 1rem;
 }
 
 .ad-placeholder {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px dashed var(--border-color);
+  @apply bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400;
+  border-width: 1px;
+  border-style: dashed;
   border-radius: 0.5rem;
   padding: 2rem 1rem;
   text-align: center;
-  color: var(--text-secondary);
   min-height: 150px;
   display: flex;
   align-items: center;

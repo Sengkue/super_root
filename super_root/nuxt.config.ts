@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   },
   modules: ['@pinia/nuxt', '@nuxtjs/color-mode', '@nuxtjs/i18n'],
   colorMode: {
-    classSuffix: ''
+    classSuffix: '',
+    fallback: 'dark'
   },
   i18n: {
     locales: [

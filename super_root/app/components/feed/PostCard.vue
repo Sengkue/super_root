@@ -598,11 +598,11 @@ const sharePost = () => {
   alert('Link copied to clipboard! (Simulated Share)');
 };
 
-onMounted(() => {
+const handleHashScroll = () => {
   if (route.hash && route.hash.startsWith('#comment-')) {
-    const commentId = parseInt(route.hash.replace('#comment-', ''), 10);
+    const commentId = route.hash.replace('#comment-', '');
     const allComments = props.post.comments || [];
-    const targetComment = allComments.find(c => c.id === commentId);
+    const targetComment = allComments.find(c => String(c.id) === String(commentId));
     
     if (targetComment) {
       // It belongs to this post!
@@ -615,6 +615,10 @@ onMounted(() => {
         }
       }
       
+      // Auto-open reply box and tag user
+      const parentIdToReply = targetComment.parentId || targetComment.id;
+      prepareSubReply(parentIdToReply, targetComment.user?.username);
+      
       // Scroll to it and highlight
       nextTick(() => {
         setTimeout(() => {
@@ -625,22 +629,36 @@ onMounted(() => {
             setTimeout(() => {
               el.classList.remove('highlight-comment');
             }, 3000);
+            
+            // Focus the reply input field inside that comment thread
+            const inputEl = document.querySelector(`.add-reply input`);
+            if (inputEl) inputEl.focus();
           }
         }, 300); // slight delay to ensure DOM and transitions finish
       });
     }
   }
+};
+
+watch(() => route.hash, () => {
+  handleHashScroll();
+});
+
+onMounted(() => {
+  handleHashScroll();
 });
 </script>
 
 <style scoped>
+@reference "../../assets/css/main.css";
+
 .post-card {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes highlight-fade {
@@ -674,12 +692,12 @@ onMounted(() => {
 
 .author {
   font-weight: 600;
-  color: var(--text-primary);
+  @apply text-slate-900 dark:text-slate-50;
 }
 
 .time {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
 }
 
 .post-owner-actions {
@@ -696,13 +714,11 @@ onMounted(() => {
   padding: 0.3rem;
   border-radius: 50%;
   transition: background 0.2s;
-  opacity: 0.7;
-  color: white;
+  @apply text-slate-500 dark:text-slate-400;
 }
 
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 1;
+  @apply bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white;
 }
 
 .options-btn {
@@ -721,11 +737,11 @@ onMounted(() => {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-md;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 0.5rem;
   padding: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   z-index: 50;
   min-width: 160px;
   display: flex;
@@ -741,7 +757,7 @@ onMounted(() => {
   padding: 0.5rem 0.75rem;
   border: none;
   background: transparent;
-  color: var(--text-secondary);
+  @apply text-slate-600 dark:text-slate-300;
   font-size: 0.9rem;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -750,8 +766,7 @@ onMounted(() => {
 }
 
 .options-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  @apply bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white;
 }
 
 .options-item.delete-item:hover {
@@ -769,10 +784,10 @@ onMounted(() => {
   width: 100%;
   min-height: 80px;
   padding: 0.75rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid var(--border-color);
+  @apply bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-50;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 0.5rem;
-  color: white;
   font-family: inherit;
   resize: vertical;
 }
@@ -808,8 +823,9 @@ onMounted(() => {
 
 .cancel-btn {
   background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  @apply border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .post-content {
@@ -842,7 +858,7 @@ onMounted(() => {
 .read-more-btn {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
@@ -851,7 +867,7 @@ onMounted(() => {
 }
 
 .read-more-btn:hover {
-  color: var(--text-primary);
+  @apply text-slate-900 dark:text-slate-50;
   text-decoration: underline;
 }
 
@@ -861,8 +877,9 @@ onMounted(() => {
   overflow: hidden;
   display: grid;
   gap: 2px;
-  background: var(--border-color);
-  border: 1px solid var(--border-color);
+  @apply bg-slate-200 dark:bg-slate-700 border-slate-200 dark:border-slate-700;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .post-image-gallery.grid-1 {
@@ -1093,9 +1110,10 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
+  @apply border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   font-size: 0.85rem;
-  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -1103,7 +1121,9 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  border-top: 1px solid var(--border-color);
+  @apply border-slate-200 dark:border-slate-700;
+  border-top-width: 1px;
+  border-top-style: solid;
   padding-top: 0.5rem;
 }
 
@@ -1121,10 +1141,10 @@ onMounted(() => {
   position: absolute;
   bottom: 100%;
   right: 0;
-  background: #1e293b;
-  border: 1px solid var(--border-color);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-md;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   padding: 0.5rem 0;
   display: flex;
   flex-direction: column;
@@ -1138,7 +1158,7 @@ onMounted(() => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: white;
+  @apply text-slate-700 dark:text-slate-200;
   text-decoration: none;
   border: none;
   background: transparent;
@@ -1150,14 +1170,14 @@ onMounted(() => {
 }
 
 .share-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  @apply bg-slate-100 dark:bg-slate-700/50;
 }
 
 .action-btn {
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  @apply text-slate-600 dark:text-slate-400;
   padding: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -1170,8 +1190,7 @@ onMounted(() => {
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  @apply bg-slate-100 dark:bg-slate-700/50 text-slate-900 dark:text-white;
 }
 
 .action-btn.active, .action-btn.liked-active {
@@ -1183,7 +1202,9 @@ onMounted(() => {
 .comments-section {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  @apply border-slate-200 dark:border-slate-700;
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 
 .comments-list {
@@ -1200,7 +1221,7 @@ onMounted(() => {
 }
 
 .comment-bubble {
-  background: rgba(15, 23, 42, 0.4);
+  @apply bg-slate-100 dark:bg-slate-700/50 text-slate-900 dark:text-slate-100;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   width: max-content;
@@ -1224,7 +1245,7 @@ onMounted(() => {
 
 .reply-btn {
   cursor: pointer;
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
   font-weight: 600;
 }
 .reply-btn:hover {
@@ -1233,7 +1254,9 @@ onMounted(() => {
 
 .replies {
   margin-left: 2rem;
-  border-left: 2px solid var(--border-color);
+  @apply border-slate-200 dark:border-slate-700;
+  border-left-width: 2px;
+  border-left-style: solid;
   padding-left: 1rem;
   display: flex;
   flex-direction: column;
@@ -1249,7 +1272,7 @@ onMounted(() => {
 .toggle-btn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -1273,11 +1296,11 @@ onMounted(() => {
 
 .add-comment input, .add-reply input {
   flex: 1;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid var(--border-color);
+  @apply bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 2rem;
   padding: 0.5rem 1rem;
-  color: white;
 }
 
 .add-comment input:focus, .add-reply input:focus {
@@ -1294,7 +1317,7 @@ onMounted(() => {
 }
 
 .add-comment button:disabled, .add-reply button:disabled {
-  color: var(--text-secondary);
+  @apply text-slate-400 dark:text-slate-500;
   cursor: not-allowed;
 }
 .saved-active {

@@ -233,13 +233,15 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
+@reference "../../assets/css/main.css";
+
 /* Inline Trigger Box */
 .trigger-box {
-  background: var(--surface-color, #1e293b);
-  border: 1px solid var(--border-color, #334155);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
@@ -266,18 +268,17 @@ const submitPost = async () => {
 .trigger-btn {
   flex: 1;
   text-align: left;
-  background: rgba(15, 23, 42, 0.5);
+  @apply bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400;
   border: 1px solid transparent;
   padding: 0.75rem 1.25rem;
   border-radius: 9999px; /* Pill shape */
-  color: var(--text-secondary, #94a3b8);
   font-size: 1.05rem;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .trigger-btn:hover {
-  background: rgba(15, 23, 42, 0.8);
+  @apply bg-slate-200 dark:bg-slate-900/80;
 }
 
 /* Modal Overlay */
@@ -294,8 +295,9 @@ const submitPost = async () => {
 }
 
 .modal-content {
-  background: var(--surface-color, #1e293b);
-  border: 1px solid var(--border-color, #334155);
+  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700;
+  border-width: 1px;
+  border-style: solid;
   width: 100%;
   max-width: 500px;
   border-radius: 1rem;
@@ -310,7 +312,7 @@ const submitPost = async () => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid var(--border-color, #334155);
+  @apply border-b border-slate-200 dark:border-slate-700;
   position: relative;
 }
 
@@ -319,7 +321,7 @@ const submitPost = async () => {
   text-align: center;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #f8fafc;
+  @apply text-slate-900 dark:text-slate-50;
   margin: 0;
 }
 
@@ -329,8 +331,7 @@ const submitPost = async () => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+  @apply bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300;
   border: none;
   display: flex;
   align-items: center;
@@ -340,7 +341,7 @@ const submitPost = async () => {
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  @apply bg-slate-200 dark:bg-white/20;
 }
 
 /* Modal User Info */
@@ -359,17 +360,16 @@ const submitPost = async () => {
 
 .username {
   font-weight: 600;
-  color: #f8fafc;
+  @apply text-slate-900 dark:text-slate-50;
   font-size: 0.95rem;
 }
 
 .privacy-badge {
-  background: rgba(255, 255, 255, 0.1);
+  @apply bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300;
   border: none;
   border-radius: 0.25rem;
   padding: 0.1rem 0.4rem;
   font-size: 0.75rem;
-  color: #cbd5e1;
   display: flex;
   align-items: center;
   font-weight: 600;
@@ -389,7 +389,7 @@ const submitPost = async () => {
   background: transparent;
   border: none;
   resize: none;
-  color: #f8fafc;
+  @apply text-slate-900 dark:text-slate-50;
   font-size: 1.25rem;
   font-family: inherit;
 }
@@ -405,7 +405,9 @@ const submitPost = async () => {
   justify-content: space-between;
   margin: 1rem;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color, #334155);
+  @apply border-slate-200 dark:border-slate-700;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 0.5rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -457,7 +459,9 @@ const submitPost = async () => {
   display: inline-block;
   border-radius: 0.5rem;
   overflow: hidden;
-  border: 1px solid var(--border-color, #334155);
+  @apply border-slate-200 dark:border-slate-700;
+  border-width: 1px;
+  border-style: solid;
   max-width: 150px;
 }
 

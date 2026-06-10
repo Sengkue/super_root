@@ -84,6 +84,7 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
+@reference "../../assets/css/main.css";
 .auth-page {
   display: flex;
   align-items: center;
@@ -99,19 +100,17 @@ const handleLogin = async () => {
 }
 
 .auth-card {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  @apply bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50;
   padding: 3rem;
   border-radius: 1.5rem;
   width: 100%;
   max-width: 450px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+  @apply shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)];
 }
 
 h2 {
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  @apply text-slate-900 dark:text-white;
   font-size: 2rem;
   text-align: center;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
@@ -121,7 +120,7 @@ h2 {
 }
 
 .subtitle {
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -134,7 +133,7 @@ label {
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  @apply text-slate-700 dark:text-slate-300;
   font-weight: 500;
 }
 
@@ -142,28 +141,28 @@ input {
   width: 100%;
   padding: 0.85rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
-  background: rgba(15, 23, 42, 0.6);
-  color: white;
+  @apply border border-slate-300 dark:border-slate-600;
+  @apply bg-slate-50/60 dark:bg-slate-900/60;
+  @apply text-slate-900 dark:text-white;
   font-size: 1rem;
   transition: all 0.2s ease;
 }
 
 input:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  @apply border-blue-500 dark:border-blue-500;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .error-msg {
-  color: #ef4444;
+  @apply text-red-600 dark:text-red-400;
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  background: rgba(239, 68, 68, 0.1);
+  @apply bg-red-100 dark:bg-red-500/10;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  @apply border border-red-200 dark:border-red-500/20;
 }
 
 .submit-btn {
@@ -197,7 +196,7 @@ input:focus {
   margin-top: 2rem;
   text-align: center;
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  @apply text-slate-500 dark:text-slate-400;
 }
 
 .auth-footer a {

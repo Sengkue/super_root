@@ -49,6 +49,8 @@ const onPostCreated = () => {
 </script>
 
 <style scoped>
+@reference "../../assets/css/main.css";
+
 .main-feed {
   display: flex;
   flex-direction: column;
@@ -58,9 +60,9 @@ const onPostCreated = () => {
 .loading, .error, .empty-state {
   text-align: center;
   padding: 3rem;
-  color: var(--text-secondary);
-  background: var(--surface-color);
+  @apply text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm;
   border-radius: 1rem;
-  border: 1px solid var(--border-color);
+  border-width: 1px;
+  border-style: solid;
 }
 </style>

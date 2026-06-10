@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- DESKTOP HEADER -->
-    <header class="hidden md:flex justify-between items-center px-8 py-4 bg-slate-800/80 backdrop-blur-md border-b border-slate-300 dark:border-slate-700 sticky top-0 z-20">
+    <header class="hidden md:flex justify-between items-center px-8 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20">
       <div class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Super Root</div>
       <nav class="flex gap-6 items-center">
         <NuxtLink to="/feed?tab=all" class="text-slate-600 dark:text-slate-400 font-medium hover:text-slate-900 dark:text-slate-50 transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'all' }">All</NuxtLink>
@@ -18,7 +18,7 @@
             v-model="searchQuery" 
             @keyup.enter="handleSearch" 
             placeholder="Search..." 
-            class="w-full bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-9 p-1.5 transition-colors"
+            class="w-full bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-9 p-1.5 transition-colors"
           >
         </div>
         
@@ -28,7 +28,7 @@
             <div v-if="showUserMenu" @click="showUserMenu = false" class="fixed inset-0 z-40"></div>
             
             <div class="relative z-50">
-              <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors focus:outline-none bg-slate-800/50 hover:bg-white dark:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-300 dark:border-slate-700">
+              <button @click="showUserMenu = !showUserMenu" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors focus:outline-none bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 px-2 py-1.5 rounded-full border border-transparent hover:border-slate-300 dark:hover:border-slate-700">
                 <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-900 dark:text-white overflow-hidden shrink-0">
                   <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
                   <span v-else>{{ authStore.activeUser?.username?.charAt(0).toUpperCase() || 'U' }}</span>
@@ -84,7 +84,7 @@
     </header>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-800/95 backdrop-blur-md border-t border-slate-300 dark:border-slate-700 flex justify-between items-center px-2 pb-2 pt-1">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 flex justify-between items-center px-2 pb-2 pt-1">
       <NuxtLink to="/feed?tab=all" class="flex-1 py-3 flex justify-center text-slate-600 dark:text-slate-400 rounded-lg transition-colors" :class="{ 'text-blue-500': $route.path === '/feed' && $route.query.tab === 'all' }">
         <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
       </NuxtLink>
