@@ -72,6 +72,9 @@
             <NuxtLink to="/user/friends" class="nav-item" :class="{ 'active': $route.path === '/user/friends' }">
               <span class="icon">👥</span> {{ $t('nav.friends') }}
             </NuxtLink>
+            <NuxtLink to="/chat" class="nav-item" :class="{ 'active': $route.path.startsWith('/chat') }">
+              <span class="icon">💬</span> Messages
+            </NuxtLink>
             <NuxtLink to="/user/saved" class="nav-item" :class="{ 'active': $route.path === '/user/saved' }">
               <span class="icon">🔖</span> {{ $t('nav.saved') }}
             </NuxtLink>

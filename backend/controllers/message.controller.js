@@ -1,4 +1,4 @@
-const { Message, User, UserProfile } = require('../models');
+const { Message, User, UserProfile, Notification } = require('../models');
 const { Op } = require('sequelize');
 
 // Helper to get active user ID from headers or fallback to Alice
@@ -30,6 +30,18 @@ exports.sendMessage = async (req, res) => {
       senderId,
       receiverId,
       content,
+    });
+
+    // Create a notification for the receiver
+    const sender = await User.findByPk(senderId, {
+      attributes: ['username']
+    });
+    
+    await Notification.create({
+      userId: receiverId,
+      type: 'message',
+      message: `${sender ? sender.username : 'Someone'} sent you a message`,
+      link: `/chat/${senderId}`
     });
 
     res.status(201).json(message);

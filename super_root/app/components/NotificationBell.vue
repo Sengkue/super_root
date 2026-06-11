@@ -155,6 +155,7 @@ const getNotificationEmoji = (type) => {
     case 'comment': return '💬';
     case 'follow': return '👤';
     case 'system': return '⚙️';
+    case 'message': return '✉️';
     default: return '🔔';
   }
 };
@@ -165,6 +166,7 @@ const getNotificationIconBg = (type) => {
     case 'comment': return 'bg-blue-500';
     case 'follow': return 'bg-purple-500';
     case 'system': return 'bg-slate-500';
+    case 'message': return 'bg-indigo-500';
     default: return 'bg-emerald-500';
   }
 };

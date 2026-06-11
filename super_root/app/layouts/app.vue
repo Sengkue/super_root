@@ -43,9 +43,9 @@
         </div>
       </NuxtLink>
 
-      <NuxtLink to="/user/saved" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path === '/user/saved' }">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
-        <span class="text-[10px] font-bold">Saved</span>
+      <NuxtLink to="/chat" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path.startsWith('/chat') }">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path></svg>
+        <span class="text-[10px] font-bold">Messages</span>
       </NuxtLink>
 
       <NuxtLink to="/user/profile" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path === '/user/profile' }">
