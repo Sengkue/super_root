@@ -259,7 +259,7 @@ onMounted(() => {
   if (authStore.activeUserObj?.profile) {
     const p = authStore.activeUserObj.profile;
     profileForm.value.language = p.language || 'en';
-    profileForm.value.theme = p.theme || 'system';
+    profileForm.value.theme = p.theme || 'dark';
     
     // Sync Nuxt i18n locale
     setLocale(profileForm.value.language);

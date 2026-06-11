@@ -65,6 +65,10 @@
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7h-2v2h-2v2h2v2h2v-2h2V9h-2V7z"></path></svg>
                 {{ isFollowingTarget ? 'Unfollow' : 'Follow' }}
               </button>
+              <NuxtLink :to="`/chat/${targetUserId}`" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                Message
+              </NuxtLink>
             </template>
           </div>
 

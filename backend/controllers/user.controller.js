@@ -179,7 +179,7 @@ const userController = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const { bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate } = req.body;
+      const { bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, theme, emailNotifications, pushNotifications, isPrivate } = req.body;
 
       // Ensure the user exists
       const user = await User.findByPk(id);
@@ -190,9 +190,9 @@ const userController = {
       // Find or create profile
       let profile = await UserProfile.findOne({ where: { userId: id } });
       if (!profile) {
-        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate });
+        profile = await UserProfile.create({ userId: id, bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, theme, emailNotifications, pushNotifications, isPrivate });
       } else {
-        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, emailNotifications, pushNotifications, isPrivate });
+        await profile.update({ bio, livesIn, worksAt, profileImage, coverImage, email, firstName, lastName, language, theme, emailNotifications, pushNotifications, isPrivate });
       }
 
       // Fetch updated user with profile and counts

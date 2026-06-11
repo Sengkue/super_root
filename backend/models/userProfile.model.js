@@ -48,6 +48,10 @@ const UserProfile = sequelize.define('UserProfile', {
     type: DataTypes.STRING,
     defaultValue: 'en'
   },
+  theme: {
+    type: DataTypes.STRING,
+    defaultValue: 'dark'
+  },
   emailNotifications: {
     type: DataTypes.BOOLEAN,
     defaultValue: true

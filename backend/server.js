@@ -35,6 +35,9 @@ app.use('/api/follows', followRoutes);
 const searchRoutes = require('./routes/search.routes');
 app.use('/api/search', searchRoutes);
 
+const messageRoutes = require('./routes/message.routes');
+app.use('/api/messages', messageRoutes);
+
 // Basic health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });

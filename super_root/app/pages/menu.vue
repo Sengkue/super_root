@@ -29,6 +29,10 @@
         <svg class="w-7 h-7 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
         <span class="font-medium text-slate-800 dark:text-slate-200">Feed</span>
       </NuxtLink>
+      <NuxtLink to="/chat" class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm hover:bg-slate-100 dark:bg-slate-700 transition-colors flex flex-col gap-2 cursor-pointer">
+        <svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        <span class="font-medium text-slate-800 dark:text-slate-200">Messages</span>
+      </NuxtLink>
       <NuxtLink to="/user/friends" class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm hover:bg-slate-100 dark:bg-slate-700 transition-colors flex flex-col gap-2 cursor-pointer">
         <svg class="w-7 h-7 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
         <span class="font-medium text-slate-800 dark:text-slate-200">{{ $t('nav.friends') }}</span>
