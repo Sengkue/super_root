@@ -1,4 +1,4 @@
-const { Post, Comment, Like, User, SavedPost } = require('../models');
+const { Post, Comment, Like, User, SavedPost, UserProfile } = require('../models');
 const { createNotification } = require('../utils/notification');
 
 // Helper to get active user ID from headers or fallback to Alice
@@ -43,8 +43,8 @@ const postController = {
         where: whereClause,
         order: [['createdAt', 'DESC']],
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
-          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }] },
           { model: Like, as: 'likes', attributes: ['id', 'userId'] },
           { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]
@@ -74,8 +74,8 @@ const postController = {
         where: { userId },
         order: [['createdAt', 'DESC']],
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
-          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }] },
           { model: Like, as: 'likes', attributes: ['id', 'userId'] },
           { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]
@@ -93,8 +93,8 @@ const postController = {
       const { id } = req.params;
       const post = await Post.findByPk(id, {
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
-          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }] },
           { model: Like, as: 'likes', attributes: ['id', 'userId'] },
           { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]
@@ -118,8 +118,8 @@ const postController = {
       
       const parentComment = await Comment.findByPk(id, {
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
-          { model: Post, as: 'post', attributes: ['id'], include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] }
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
+          { model: Post, as: 'post', attributes: ['id'], include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }] }
         ]
       });
       
@@ -130,7 +130,7 @@ const postController = {
       const replies = await Comment.findAll({
         where: { parentId: id },
         order: [['createdAt', 'ASC']],
-        include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
+        include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }]
       });
       
       // We send it back structured as a thread
@@ -160,7 +160,7 @@ const postController = {
       
       const createdPost = await Post.findByPk(post.id, {
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
           { model: Comment, as: 'comments' },
           { model: Like, as: 'likes' },
           { model: SavedPost, as: 'saves' }
@@ -198,7 +198,7 @@ const postController = {
       const comment = await Comment.create({ content, postId, userId, parentId: parentId || null });
       
       const createdComment = await Comment.findByPk(comment.id, {
-        include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
+        include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }]
       });
 
       // Notification Logic
@@ -354,8 +354,8 @@ const postController = {
         where: { id: { [Op.in]: postIds } },
         order: [['createdAt', 'DESC']],
         include: [
-          { model: User, as: 'user', attributes: ['id', 'username'] },
-          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'] }] },
+          { model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user', attributes: ['id', 'username'], include: [{ model: UserProfile, as: 'profile', attributes: ['profileImage'] }] }] },
           { model: Like, as: 'likes', attributes: ['id', 'userId'] },
           { model: SavedPost, as: 'saves', attributes: ['id', 'userId'] }
         ]

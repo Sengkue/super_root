@@ -37,9 +37,16 @@
         <span class="text-[10px] font-bold">Friends</span>
       </NuxtLink>
       
-      <NuxtLink to="/feed/create" class="flex items-center justify-center w-11 h-8 rounded-lg bg-gradient-to-r from-cyan-400 via-white to-pink-500 p-[2px]">
-        <div class="bg-white w-full h-full rounded-[6px] flex items-center justify-center text-black">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+      <!-- Hmong Art Inspired Create Button -->
+      <NuxtLink to="/feed/create" class="relative flex items-center justify-center w-12 h-10 -mt-5 transition-transform hover:scale-105 group">
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-yellow-400 to-emerald-500 rounded-xl rotate-45 scale-75 opacity-70 blur-sm group-hover:opacity-100 transition-opacity"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-pink-600 via-yellow-400 to-emerald-500 rounded-xl transform shadow-lg"></div>
+        <div class="absolute inset-[3px] bg-slate-900 rounded-[9px] flex items-center justify-center overflow-hidden">
+          <!-- Geometric Hmong motif accent -->
+          <div class="absolute w-full h-full opacity-30" style="background-image: repeating-linear-gradient(45deg, #ec4899 0, #ec4899 2px, transparent 2px, transparent 6px, #10b981 6px, #10b981 8px, transparent 8px, transparent 12px);"></div>
+          <!-- Diamond center -->
+          <div class="absolute w-4 h-4 border-2 border-yellow-400 rotate-45"></div>
+          <svg class="w-6 h-6 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
         </div>
       </NuxtLink>
 

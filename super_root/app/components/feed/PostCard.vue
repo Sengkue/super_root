@@ -2,9 +2,12 @@
   <div class="post-card">
     <!-- Header -->
     <div class="post-header">
-      <div class="avatar">{{ post.user?.username?.charAt(0).toUpperCase() || '?' }}</div>
+      <NuxtLink :to="`/user/profile?id=${post.userId}`" class="avatar hover:opacity-80 transition-opacity">
+        <img v-if="post.user?.profile?.profileImage" :src="post.user.profile.profileImage" class="w-full h-full object-cover rounded-full" />
+        <span v-else>{{ post.user?.username?.charAt(0).toUpperCase() || '?' }}</span>
+      </NuxtLink>
       <div class="meta">
-        <div class="author">{{ post.user?.username || 'Unknown User' }}</div>
+        <NuxtLink :to="`/user/profile?id=${post.userId}`" class="author hover:text-blue-500 dark:hover:text-blue-400 hover:underline transition-colors">{{ post.user?.username || 'Unknown User' }}</NuxtLink>
         <div class="time">{{ new Date(post.createdAt).toLocaleString() }}</div>
       </div>
       <div class="post-options-wrapper">

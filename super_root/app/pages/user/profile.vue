@@ -334,6 +334,7 @@ const updateProfileWithImageUrl = async (field, url) => {
     });
     if (res.success) {
       await authStore.fetchCurrentUser();
+      await fetchTargetUser();
     }
   } catch (err) {
     console.error('Failed to update profile image url', err);

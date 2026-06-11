@@ -11,10 +11,11 @@ export const useApi = () => {
       const userId = authStore.activeUserId || authCookie.value;
       
       if (userId) {
-        const headers = new Headers(options.headers || {});
-        headers.set('x-user-id', String(userId));
-        headers.set('userid', String(userId));
-        options.headers = headers;
+        options.headers = {
+          ...options.headers,
+          'x-user-id': String(userId),
+          'userid': String(userId)
+        };
       }
     }
   });
