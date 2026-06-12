@@ -1,7 +1,7 @@
 <template>
   <div class="replies-page min-h-screen bg-white dark:bg-slate-900 pb-20">
     <!-- Top Header -->
-    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+    <header class="flex items-center gap-3 mb-6 px-2">
       <button @click="$router.back()" class="p-1 -ml-1 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
       </button>
@@ -29,8 +29,9 @@
       <div class="thread-container relative">
         <!-- Parent Comment -->
         <div class="flex gap-3 mb-4 relative z-10" :id="'comment-' + commentData.id">
-          <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300">
-            {{ commentData.user?.username?.charAt(0).toUpperCase() || '?' }}
+          <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 overflow-hidden">
+            <img v-if="commentData.user?.profile?.profileImage" :src="commentData.user.profile.profileImage" class="w-full h-full object-cover" />
+            <span v-else>{{ commentData.user?.username?.charAt(0).toUpperCase() || '?' }}</span>
           </div>
           <div class="flex-1">
             <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl px-4 py-2 inline-block max-w-full">
@@ -59,8 +60,9 @@
             <!-- Connector elbow -->
             <div class="absolute -left-7 top-4 w-6 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
             
-            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center font-bold text-sm text-slate-600 dark:text-slate-300">
-              {{ reply.user?.username?.charAt(0).toUpperCase() || '?' }}
+            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center font-bold text-sm text-slate-600 dark:text-slate-300 overflow-hidden">
+              <img v-if="reply.user?.profile?.profileImage" :src="reply.user.profile.profileImage" class="w-full h-full object-cover" />
+              <span v-else>{{ reply.user?.username?.charAt(0).toUpperCase() || '?' }}</span>
             </div>
             <div class="flex-1">
               <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl px-3 py-2 inline-block max-w-full">
@@ -79,26 +81,27 @@
     </div>
 
     <!-- Sticky Reply Input -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-3 flex gap-2 items-end z-50 pb-safe">
-      <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center font-bold mt-1">
-        {{ authStore.activeUserObj?.username?.charAt(0).toUpperCase() || 'U' }}
+    <div class="sticky bottom-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-3 flex gap-2 items-end z-40 pb-safe mt-4 rounded-t-2xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+      <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center font-bold mt-1 overflow-hidden">
+        <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
+        <span v-else>{{ authStore.activeUserObj?.username?.charAt(0).toUpperCase() || 'U' }}</span>
       </div>
-      <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center px-4 py-1.5 border border-transparent focus-within:border-blue-500 transition-colors">
+      <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center px-4 py-1.5 border border-slate-200 dark:border-slate-700 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all shadow-sm">
         <textarea 
           ref="replyInput"
           v-model="newReply" 
           rows="1"
           placeholder="Write a reply..." 
-          class="w-full bg-transparent border-none focus:ring-0 text-sm py-1.5 resize-none max-h-24 dark:text-white"
+          class="w-full bg-transparent border-0 p-0 focus:ring-0 focus:border-transparent focus:outline-none text-sm py-1 resize-none max-h-24 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
           @input="autoGrow"
           @keydown.enter.prevent="submitReply"
         ></textarea>
         <button 
           @click="submitReply" 
           :disabled="!newReply.trim() || isSubmitting"
-          class="ml-2 text-blue-500 p-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50 disabled:hover:bg-transparent transition-colors flex-shrink-0"
+          class="ml-2 text-white bg-blue-500 p-2 rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 transition-all flex-shrink-0 shadow-md transform hover:scale-105 active:scale-95"
         >
-          <svg class="w-5 h-5 transform rotate-45" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+          <svg class="w-4 h-4 transform rotate-45 ml-[-2px] mt-[-2px]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
         </button>
       </div>
     </div>

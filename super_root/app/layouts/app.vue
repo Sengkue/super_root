@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-app-layout flex flex-col min-h-screen bg-white dark:bg-black text-slate-900 dark:text-slate-50">
     <!-- Top Header (TikTok Style) -->
-    <header class="sticky top-0 z-40 bg-white dark:bg-black/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <header v-if="$route.path === '/feed'" class="sticky top-0 z-40 bg-white dark:bg-black/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div class="flex justify-between items-center px-4 py-3 relative">
         <ClientOnly>
           <NotificationBell v-if="authStore.isLoggedIn" alignLeft />
@@ -38,7 +38,7 @@
       </NuxtLink>
       
       <!-- Hmong Art Inspired Create Button -->
-      <NuxtLink to="/feed/create" class="relative flex items-center justify-center w-12 h-10 -mt-5 transition-transform hover:scale-105 group">
+      <button @click="showCreatePostModal = true" class="relative flex items-center justify-center w-12 h-10 -mt-5 transition-transform hover:scale-105 group">
         <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-yellow-400 to-emerald-500 rounded-xl rotate-45 scale-75 opacity-70 blur-sm group-hover:opacity-100 transition-opacity"></div>
         <div class="absolute inset-0 bg-gradient-to-tr from-pink-600 via-yellow-400 to-emerald-500 rounded-xl transform shadow-lg"></div>
         <div class="absolute inset-[3px] bg-slate-900 rounded-[9px] flex items-center justify-center overflow-hidden">
@@ -48,23 +48,49 @@
           <div class="absolute w-4 h-4 border-2 border-yellow-400 rotate-45"></div>
           <svg class="w-6 h-6 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
         </div>
-      </NuxtLink>
+      </button>
 
       <NuxtLink to="/chat" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path.startsWith('/chat') }">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path></svg>
         <span class="text-[10px] font-bold">Messages</span>
       </NuxtLink>
 
-      <NuxtLink to="/user/profile" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path === '/user/profile' }">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-        <span class="text-[10px] font-bold">Profile</span>
+      <NuxtLink to="/menu" class="flex flex-col items-center gap-1 text-slate-900 dark:text-slate-500 dark:text-slate-400 transition-colors" :class="{ 'text-slate-900 dark:text-white': $route.path === '/menu' }">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="text-[10px] font-bold">Menu</span>
       </NuxtLink>
     </nav>
+
+    <!-- Global Create Post Modal Dialog -->
+    <FeedCreatePostBox 
+      v-if="showCreatePostModal" 
+      hide-trigger 
+      start-open 
+      @post-created="handlePostCreated" 
+      @closed="showCreatePostModal = false" 
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+
+const showCreatePostModal = ref(false);
+
+const handlePostCreated = () => {
+  showCreatePostModal.value = false;
+  // If we are already on the feed page, refresh data
+  if (route.path === '/feed') {
+    refreshNuxtData();
+  } else {
+    // Otherwise, navigate back to feed
+    router.push('/feed');
+  }
+};
 </script>

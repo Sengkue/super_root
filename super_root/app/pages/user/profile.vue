@@ -9,6 +9,10 @@
     <div class="relative bg-white dark:bg-slate-800 rounded-b-2xl border-x border-b border-slate-300 dark:border-slate-700 shadow-sm overflow-hidden mb-4">
       <!-- Cover Photo -->
       <div class="h-48 md:h-64 relative bg-white dark:bg-slate-800" :style="targetUser?.profile?.coverImage ? `background-image: url('${targetUser.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !targetUser?.profile?.coverImage}">
+        <!-- Floating Back Button -->
+        <button @click="$router.back()" class="absolute top-4 left-4 w-10 h-10 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors z-30 shadow-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        </button>
         <div v-if="isOwnProfile" @click="coverImageInput?.click()" class="absolute bottom-4 right-4 w-9 h-9 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-100 dark:bg-slate-700 transition-colors" :class="{'opacity-50 pointer-events-none': isUploadingCoverImage}">
           <svg v-if="!isUploadingCoverImage" class="w-5 h-5 text-slate-800 dark:text-slate-200" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
           <svg v-else class="animate-spin w-5 h-5 text-slate-800 dark:text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>

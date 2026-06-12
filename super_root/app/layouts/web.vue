@@ -19,7 +19,7 @@
         <div class="flex items-center gap-4 ml-4 pl-4 border-l border-slate-300 dark:border-slate-700">
           <template v-if="authStore.isLoggedIn">
             <!-- Invisible overlay to close menus -->
-            <div v-if="showUserMenu || showNotifications" @click="closeMenus" class="fixed inset-0 z-40"></div>
+            <div v-if="showUserMenu" @click="closeMenus" class="fixed inset-0 z-40"></div>
             
             <!-- Notifications Bell -->
             <NotificationBell class="mr-2" ref="notifBell" @toggled="onNotifToggled" />

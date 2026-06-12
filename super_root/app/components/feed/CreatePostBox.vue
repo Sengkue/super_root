@@ -1,13 +1,13 @@
 <template>
-  <div class="create-post-container">
+  <div class="create-post-container" :class="{ 'hidden': hideTrigger && !isModalOpen }">
     <!-- Trigger Box (Inline) -->
-    <div class="trigger-box">
-      <div class="trigger-top">
-        <div class="avatar-circle">
-          <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover rounded-full" />
+    <div v-if="!hideTrigger" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 shadow-sm rounded-2xl p-4 mb-6 transition-all hover:shadow-md">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold shrink-0 shadow-inner overflow-hidden">
+          <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
           <span v-else>{{ authStore.activeUserObj?.username?.charAt(0).toUpperCase() || '?' }}</span>
         </div>
-        <button class="trigger-btn" @click="openModal">
+        <button class="flex-1 text-left bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50 py-2.5 px-4 rounded-full font-medium cursor-pointer transition-colors hover:bg-slate-200 dark:hover:bg-slate-900/80" @click="openModal">
           What's on your mind, {{ authStore.activeUserObj?.username || 'User' }}?
         </button>
       </div>
@@ -15,72 +15,114 @@
 
     <!-- Create Post Modal -->
     <Teleport to="body">
-      <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-        <div class="modal-content" @click.stop>
+      <div v-if="isModalOpen" class="fixed inset-0 z-[100000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" @click="closeModal">
+        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col m-4 overflow-hidden transform transition-all" @click.stop>
           
-          <div class="modal-header">
-            <h2 class="modal-title">Create post</h2>
-            <button class="close-btn" @click="closeModal">
-              <span class="text-2xl leading-none">&times;</span>
+          <!-- Header -->
+          <div class="flex items-center justify-between p-4 border-b border-slate-200/50 dark:border-slate-700/50 relative bg-slate-50/50 dark:bg-slate-800/30">
+            <h2 class="w-full text-center text-xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">Create Post</h2>
+            <button class="absolute right-4 w-8 h-8 rounded-full bg-slate-200/50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors" @click="closeModal">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
           </div>
           
-          <div class="modal-user-info">
-            <div class="avatar-circle">
-              <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover rounded-full" />
+          <!-- User Info -->
+          <div class="flex items-center gap-3 p-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold shrink-0 shadow-inner overflow-hidden">
+              <img v-if="authStore.activeUserObj?.profile?.profileImage" :src="authStore.activeUserObj.profile.profileImage" class="w-full h-full object-cover" />
               <span v-else>{{ authStore.activeUserObj?.username?.charAt(0).toUpperCase() || '?' }}</span>
             </div>
-            <div class="user-details">
-              <span class="username">{{ authStore.activeUserObj?.username || 'User' }}</span>
-              <button class="privacy-badge">
-                <span class="mr-1">👥</span> Friends <span class="text-[10px] ml-1">▼</span>
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-900 dark:text-slate-50 text-base">{{ authStore.activeUserObj?.username || 'User' }}</span>
+              <button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded text-xs px-2 py-0.5 mt-0.5 flex items-center gap-1 font-semibold w-fit">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                Friends <span class="text-[8px]">▼</span>
               </button>
             </div>
           </div>
           
-          <div class="modal-body">
+          <!-- Body -->
+          <div class="px-4 max-h-[50vh] overflow-y-auto custom-scrollbar">
             <textarea 
               v-model="content" 
               :placeholder="`What's on your mind, ${authStore.activeUserObj?.username || 'User'}?`"
-              class="modal-textarea"
+              class="w-full min-h-[100px] bg-transparent border-none resize-none text-xl md:text-2xl text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 mb-2"
             ></textarea>
             
             <!-- Image Previews -->
-            <div v-if="selectedImagePreviews.length > 0" class="image-previews-container">
-              <div v-for="(preview, idx) in selectedImagePreviews" :key="idx" class="image-preview">
-                <img :src="preview" />
-                <button v-if="!isSubmitting" class="remove-btn" @click="removeImage(idx)">×</button>
+            <div v-if="selectedImagePreviews.length > 0" class="flex flex-wrap gap-2 pb-4">
+              <div v-for="(preview, idx) in selectedImagePreviews" :key="idx" class="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 w-32 h-32 md:w-40 md:h-40 group shadow-sm">
+                <img :src="preview" class="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                <button v-if="!isSubmitting" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm text-white border border-white/20 flex items-center justify-center hover:bg-red-500/80 transition-colors z-10" @click="removeImage(idx)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
                 
-                <div v-if="uploadingImage && idx === currentUploadIndex" class="progress-overlay">
-                  <div v-if="uploadProgress === 100" class="spinner"></div>
-                  <div v-else class="progress-bar-container">
-                    <div class="progress-bar-fill" :style="{ width: uploadProgress + '%' }"></div>
+                <div v-if="uploadingImage && idx === currentUploadIndex" class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm flex flex-col items-center justify-center gap-2 z-20">
+                  <div v-if="uploadProgress === 100" class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div v-else class="w-3/4 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500 rounded-full transition-all duration-200" :style="{ width: uploadProgress + '%' }"></div>
                   </div>
-                  <span class="progress-text">{{ uploadProgress === 100 ? 'Processing...' : uploadProgress + '%' }}</span>
+                  <span class="text-white text-xs font-bold">{{ uploadProgress === 100 ? 'Processing...' : uploadProgress + '%' }}</span>
                 </div>
                 
-                <div v-if="uploadingImage && idx < currentUploadIndex" class="progress-overlay success-overlay">
-                  <span class="success-icon">✓</span>
+                <div v-if="uploadingImage && idx < currentUploadIndex" class="absolute inset-0 bg-emerald-500/60 backdrop-blur-sm flex items-center justify-center z-20">
+                  <svg class="w-8 h-8 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                 </div>
               </div>
             </div>
           </div>
           
-          <div class="modal-add-to-post">
-            <span class="add-text font-semibold text-slate-700 dark:text-slate-300">Add to your post</span>
-            <div class="add-icons">
-              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors" @click="$refs.fileInput.click()" title="Attach Images"><span class="text-2xl leading-none text-green-500">📷</span></button>
-              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-blue-500">👤</span></button>
-              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-yellow-500">😊</span></button>
-              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-red-500">📍</span></button>
-              <button class="add-icon-btn hover:bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"><span class="text-2xl leading-none text-slate-600 dark:text-slate-400">⋯</span></button>
+          <!-- Add to Post -->
+          <div class="mx-4 mb-4 mt-2 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl flex items-center justify-between shadow-inner relative">
+            <span class="font-semibold text-slate-700 dark:text-slate-300 text-sm pl-2">Add to your post</span>
+            <div class="flex items-center gap-1 relative">
+              <button class="p-2.5 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all group" @click="$refs.fileInput.click()" title="Attach Images">
+                <span class="text-2xl leading-none drop-shadow-sm group-hover:scale-110 inline-block transition-transform">📷</span>
+              </button>
+              <button class="p-2.5 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all group" @click.stop="toggleTagInput" title="Tag People">
+                <span class="text-2xl leading-none drop-shadow-sm group-hover:scale-110 inline-block transition-transform">👤</span>
+              </button>
+              <button class="p-2.5 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all group" @click.stop="toggleEmojiPicker" title="Feelings/Activity">
+                <span class="text-2xl leading-none drop-shadow-sm group-hover:scale-110 inline-block transition-transform">😊</span>
+              </button>
+              <button class="p-2.5 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-700/80 transition-all group" @click.stop="toggleLocationInput" title="Add Location">
+                <span class="text-2xl leading-none drop-shadow-sm group-hover:scale-110 inline-block transition-transform">📍</span>
+              </button>
             </div>
-            <input type="file" ref="fileInput" @change="handleFileSelect" accept="image/*" multiple style="display: none;" />
+            <input type="file" ref="fileInput" @change="handleFileSelect" accept="image/*" multiple class="hidden" />
+
+            <!-- Quick Emoji Picker -->
+            <div v-if="showEmojiPicker" class="absolute right-0 bottom-full mb-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 shadow-xl rounded-xl p-2 flex gap-1 flex-wrap w-56 z-50 animate-[fadeIn_0.15s_ease-out]" @click.stop>
+              <button v-for="emoji in commonEmojis" :key="emoji" @click.stop="insertEmoji(emoji)" class="text-2xl hover:bg-slate-100 dark:hover:bg-slate-700 w-10 h-10 rounded-lg flex items-center justify-center transition-transform hover:scale-110">{{ emoji }}</button>
+            </div>
+
+            <!-- Tag Input Popover -->
+            <div v-if="showTagInput" class="absolute right-0 bottom-full mb-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 shadow-xl rounded-xl p-3 w-64 z-50 animate-[fadeIn_0.15s_ease-out]" @click.stop>
+              <div class="flex gap-2">
+                <input id="tag-input" v-model="tagInputText" @keyup.enter="addTag" type="text" placeholder="Enter username..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" />
+                <button @click.stop="addTag" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-3 py-2 text-sm font-bold transition-colors">Add</button>
+              </div>
+            </div>
+
+            <!-- Location Input Popover -->
+            <div v-if="showLocationInput" class="absolute right-0 bottom-full mb-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 shadow-xl rounded-xl p-3 w-64 z-50 animate-[fadeIn_0.15s_ease-out]" @click.stop>
+              <div class="flex gap-2">
+                <input id="location-input" v-model="locationInputText" @keyup.enter="addLocation" type="text" placeholder="Where are you?" class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-red-500 outline-none" />
+                <button @click.stop="addLocation" class="bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 text-sm font-bold transition-colors">Add</button>
+              </div>
+            </div>
           </div>
           
-          <div class="modal-footer">
-            <button class="post-btn-full" @click="submitPost" :disabled="(!content.trim() && !selectedImageFiles.length) || isSubmitting">
-              {{ isSubmitting ? 'Posting...' : 'Post' }}
+          <!-- Footer -->
+          <div class="p-4 pt-0">
+            <button 
+              class="w-full py-3 rounded-xl font-extrabold text-white transition-all duration-300 shadow-md relative overflow-hidden group"
+              :class="(!content.trim() && !selectedImageFiles.length) || isSubmitting ? 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5'"
+              @click="submitPost" 
+              :disabled="(!content.trim() && !selectedImageFiles.length) || isSubmitting"
+            >
+              <div v-if="!((!content.trim() && !selectedImageFiles.length) || isSubmitting)" class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span class="relative z-10">{{ isSubmitting ? 'Posting...' : 'Post' }}</span>
             </button>
           </div>
           
@@ -91,10 +133,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
-const emit = defineEmits(['post-created']);
+const props = defineProps({
+  startOpen: {
+    type: Boolean,
+    default: false
+  },
+  hideTrigger: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const emit = defineEmits(['post-created', 'closed']);
 const authStore = useAuthStore();
 
 const isModalOpen = ref(false);
@@ -108,12 +161,68 @@ const uploadingImage = ref(false);
 const uploadProgress = ref(0);
 const currentUploadIndex = ref(-1);
 
+onMounted(() => {
+  if (props.startOpen) {
+    isModalOpen.value = true;
+  }
+});
+
 const openModal = () => {
   isModalOpen.value = true;
 };
 
 const closeModal = () => {
   isModalOpen.value = false;
+  showEmojiPicker.value = false;
+  emit('closed');
+};
+
+const showEmojiPicker = ref(false);
+const showTagInput = ref(false);
+const showLocationInput = ref(false);
+const tagInputText = ref('');
+const locationInputText = ref('');
+const commonEmojis = ['😊', '😂', '😍', '👍', '🔥', '🎉', '🙌', '🤔', '😎', '❤️'];
+
+const insertEmoji = (emoji) => {
+  content.value += emoji;
+  showEmojiPicker.value = false;
+};
+
+const toggleTagInput = () => {
+  showTagInput.value = !showTagInput.value;
+  showEmojiPicker.value = false;
+  showLocationInput.value = false;
+  if (showTagInput.value) setTimeout(() => document.getElementById('tag-input')?.focus(), 50);
+};
+
+const toggleLocationInput = () => {
+  showLocationInput.value = !showLocationInput.value;
+  showEmojiPicker.value = false;
+  showTagInput.value = false;
+  if (showLocationInput.value) setTimeout(() => document.getElementById('location-input')?.focus(), 50);
+};
+
+const toggleEmojiPicker = () => {
+  showEmojiPicker.value = !showEmojiPicker.value;
+  showTagInput.value = false;
+  showLocationInput.value = false;
+};
+
+const addTag = () => {
+  if (tagInputText.value.trim()) {
+    content.value += ` @${tagInputText.value.trim()} `;
+    tagInputText.value = '';
+    showTagInput.value = false;
+  }
+};
+
+const addLocation = () => {
+  if (locationInputText.value.trim()) {
+    content.value += `\n📍 at ${locationInputText.value.trim()}`;
+    locationInputText.value = '';
+    showLocationInput.value = false;
+  }
 };
 
 const handleFileSelect = (event) => {

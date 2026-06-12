@@ -1,9 +1,14 @@
 <template>
     <div class="w-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
-          <span class="text-4xl">👥</span> Friends
-        </h1>
+        <div class="flex items-center gap-4">
+          <button @click="$router.back()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </button>
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
+            <span class="text-4xl">👥</span> Friends
+          </h1>
+        </div>
         
         <div class="relative w-full sm:w-64">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

@@ -18,7 +18,7 @@ useHead({
 </script>
 
 <style scoped>
-@reference "../../assets/css/main.css";
+@reference "../assets/css/main.css";
 .about-page {
   max-width: 800px;
   margin: 0 auto;

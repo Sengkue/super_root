@@ -204,26 +204,49 @@ const postController = {
       // Notification Logic
       const commentPreview = content.length > 30 ? content.substring(0, 30) + '...' : content;
       
+      let notifiedUserIds = new Set();
+      notifiedUserIds.add(userId); // Don't notify self
+
+      // 1. Check for mentions in the content
+      const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+      let match;
+      while ((match = mentionRegex.exec(content)) !== null) {
+        const mentionedUsername = match[1];
+        const mentionedUser = await User.findOne({ where: { username: mentionedUsername } });
+        
+        if (mentionedUser && !notifiedUserIds.has(mentionedUser.id)) {
+          await createNotification({
+            userId: mentionedUser.id,
+            type: 'comment',
+            message: `${createdComment.user.username} mentioned you: "${commentPreview}"`,
+            link: parentId ? `/comment/${parentId}#reply-${createdComment.id}` : `/post/${postId}#comment-${createdComment.id}`
+          });
+          notifiedUserIds.add(mentionedUser.id);
+        }
+      }
+
       if (parentId) {
-        // It's a reply to a comment, notify the parent comment owner
+        // It's a reply to a comment, notify the parent comment owner if not already notified
         const parentComment = await Comment.findByPk(parentId);
-        if (parentComment && parentComment.userId !== userId) {
+        if (parentComment && !notifiedUserIds.has(parentComment.userId)) {
           await createNotification({
             userId: parentComment.userId,
             type: 'comment',
             message: `${createdComment.user.username} replied to your comment: "${commentPreview}"`,
             link: `/comment/${parentId}#reply-${createdComment.id}`
           });
+          notifiedUserIds.add(parentComment.userId);
         }
       } else {
-        // It's a top-level comment, notify the post owner
-        if (post.userId !== userId) {
+        // It's a top-level comment, notify the post owner if not already notified
+        if (!notifiedUserIds.has(post.userId)) {
           await createNotification({
             userId: post.userId,
             type: 'comment',
             message: `${createdComment.user.username} commented: "${commentPreview}"`,
             link: `/post/${postId}#comment-${createdComment.id}`
           });
+          notifiedUserIds.add(post.userId);
         }
       }
 
