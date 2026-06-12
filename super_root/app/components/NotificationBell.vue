@@ -1,15 +1,12 @@
 <template>
-  <div class="relative z-50">
-    <!-- Invisible overlay to close menu -->
-    <div v-if="showNotifications" @click="showNotifications = false" class="fixed inset-0 z-40"></div>
-    
+  <div class="relative z-50" ref="bellContainer">
     <button @click="toggleNotifications" class="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none bg-slate-100 dark:bg-slate-800 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
       <span v-if="unreadCount > 0" class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-slate-50 dark:border-slate-900 transform translate-x-1/3 -translate-y-1/3">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
     </button>
     
     <!-- Notifications Dropdown -->
-    <div v-if="showNotifications" class="absolute mt-3 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden z-50 transform transition-all duration-200" :class="[alignLeft ? '-left-2 origin-top-left' : 'right-0 origin-top-right', dropdownClass]">
+    <div v-if="showNotifications" class="absolute mt-3 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden z-50 transform transition-all duration-200 before:content-[''] before:absolute before:-top-3 before:left-0 before:w-full before:h-3" :class="[alignLeft ? '-left-2 origin-top-left' : 'right-0 origin-top-right', dropdownClass]">
       <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
         <h3 class="font-bold text-slate-900 dark:text-white">{{ $t('notifications_ui.title') }}</h3>
         <button v-if="unreadCount > 0" @click="markAllAsRead" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none">
@@ -59,7 +56,14 @@ const authStore = useAuthStore();
 const $api = useApi();
 const showNotifications = ref(false);
 const notifications = ref([]);
+const bellContainer = ref(null);
 let pollInterval = null;
+
+const handleClickOutside = (event) => {
+  if (showNotifications.value && bellContainer.value && !bellContainer.value.contains(event.target)) {
+    showNotifications.value = false;
+  }
+};
 
 const unreadCount = computed(() => {
   return notifications.value.filter(n => !n.isRead).length;
@@ -188,6 +192,7 @@ defineExpose({
 });
 
 onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
   if (authStore.isLoggedIn) {
     fetchNotifications();
     setupPushNotifications();
@@ -196,6 +201,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
   if (pollInterval) clearInterval(pollInterval);
 });
 </script>

@@ -113,6 +113,14 @@ const userController = {
         password: hashedPassword
       });
 
+      // Initialize an empty user profile
+      await UserProfile.create({
+        userId: user.id,
+        bio: '',
+        livesIn: '',
+        worksAt: ''
+      });
+
       res.status(201).json({
         success: true,
         message: 'User created successfully',
@@ -150,6 +158,11 @@ const userController = {
       });
 
       if (!user) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
         return res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
 

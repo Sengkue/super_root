@@ -72,9 +72,26 @@
       <div v-if="isLightboxOpen" class="lightbox-overlay" @click="closeLightbox">
         <button class="lightbox-close" @click="closeLightbox">×</button>
         
+        <div class="lightbox-toolbar" @click.stop>
+          <button class="lightbox-tool-btn" @click="handleZoom(0.5)" title="Zoom In">➕</button>
+          <button class="lightbox-tool-btn" @click="handleZoom(-0.5)" title="Zoom Out">➖</button>
+          <button class="lightbox-tool-btn" @click="resetZoom" title="Reset Zoom" v-if="zoomLevel !== 1">🔄</button>
+        </div>
+        
         <button v-if="activeImageIndex > 0" class="lightbox-nav prev" @click.stop="prevImage">❮</button>
         
-        <img :src="imageUrls[activeImageIndex]" class="lightbox-image" @click.stop />
+        <div class="lightbox-img-wrapper" 
+             @click.stop 
+             @wheel.prevent="handleWheel"
+             @mousedown.prevent="startDrag"
+             @mousemove="onDrag"
+             @mouseup="endDrag"
+             @mouseleave="endDrag"
+             @touchstart="startDrag"
+             @touchmove="onDrag"
+             @touchend="endDrag">
+          <img :src="imageUrls[activeImageIndex]" class="lightbox-image" :style="{ transform: `translate(${panX}px, ${panY}px) scale(${zoomLevel})`, transition: isDragging ? 'none' : 'transform 0.1s ease-out' }" draggable="false" />
+        </div>
         
         <button v-if="activeImageIndex < imageUrls.length - 1" class="lightbox-nav next" @click.stop="nextImage">❯</button>
         
@@ -423,6 +440,55 @@ const prevImage = (e) => {
     activeImageIndex.value--;
   }
 };
+
+const zoomLevel = ref(1);
+const panX = ref(0);
+const panY = ref(0);
+let isDragging = false;
+let startX = 0;
+let startY = 0;
+
+const resetZoom = () => {
+  zoomLevel.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+};
+
+const handleZoom = (delta) => {
+  const newZoom = zoomLevel.value + delta;
+  zoomLevel.value = Math.min(Math.max(0.5, newZoom), 5);
+};
+
+const handleWheel = (e) => {
+  handleZoom(e.deltaY * -0.002);
+};
+
+const startDrag = (e) => {
+  if (zoomLevel.value <= 1) return;
+  isDragging = true;
+  startX = e.clientX || (e.touches && e.touches[0].clientX);
+  startY = e.clientY || (e.touches && e.touches[0].clientY);
+};
+
+const onDrag = (e) => {
+  if (!isDragging) return;
+  if (e.cancelable) e.preventDefault();
+  const currentX = e.clientX || (e.touches && e.touches[0].clientX);
+  const currentY = e.clientY || (e.touches && e.touches[0].clientY);
+  panX.value += currentX - startX;
+  panY.value += currentY - startY;
+  startX = currentX;
+  startY = currentY;
+};
+
+const endDrag = () => {
+  isDragging = false;
+};
+
+watch(activeImageIndex, resetZoom);
+watch(isLightboxOpen, (isOpen) => {
+  if (!isOpen) resetZoom();
+});
 
 // Extract Facebook URL from content text
 const facebookUrlEncoded = computed(() => {
@@ -958,12 +1024,52 @@ onMounted(() => {
   animation: fadeIn 0.2s ease-out;
 }
 
+.lightbox-img-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
 .lightbox-image {
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   user-select: none;
+  pointer-events: auto;
+}
+
+.lightbox-toolbar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  z-index: 100001;
+}
+
+.lightbox-tool-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.lightbox-tool-btn:active {
+  transform: scale(0.9);
 }
 
 .lightbox-close {

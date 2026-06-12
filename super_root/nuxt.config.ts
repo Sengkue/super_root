@@ -46,15 +46,13 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/api/**': {
-      proxy: process.env.NUXT_PUBLIC_API_BASE 
-        ? `${process.env.NUXT_PUBLIC_API_BASE.replace(/\/api$/, '')}/api/**`
-        : 'http://localhost:3001/api/**'
+      proxy: 'http://localhost:3001/api/**'
     }
   },
   runtimeConfig: {
     imgbbApiKey: process.env.NUXT_IMGBB_API_KEY || '', // Private key
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001/api'
+      apiBase: '/api'
     }
   }
 })

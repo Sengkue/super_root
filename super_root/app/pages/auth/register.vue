@@ -62,10 +62,13 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useAuthStore } from '~/stores/auth';
 
 definePageMeta({
   layout: 'blank'
 });
+
+const authStore = useAuthStore();
 
 const username = ref('');
 const number = ref('');
@@ -98,15 +101,37 @@ const handleRegister = async () => {
     });
     
     if (res.success) {
-      username.value = '';
-      number.value = '';
-      password.value = '';
-      repeatPassword.value = '';
-      successMsg.value = 'Account created successfully! Redirecting to login...';
+      successMsg.value = 'Account created successfully! Logging you in...';
       
-      setTimeout(() => {
-        navigateTo('/auth/login');
-      }, 2000);
+      try {
+        const loginRes = await $api('/users/login', {
+          method: 'POST',
+          body: {
+            emailOrPhone: number.value,
+            password: password.value
+          }
+        });
+        
+        if (loginRes.success) {
+          authStore.setAuth(loginRes.data.id, loginRes.data);
+          
+          username.value = '';
+          number.value = '';
+          password.value = '';
+          repeatPassword.value = '';
+          
+          navigateTo('/feed');
+        } else {
+          throw new Error('Auto-login failed');
+        }
+      } catch (loginErr) {
+        console.error('Auto-login error', loginErr);
+        successMsg.value = '';
+        errorMsg.value = 'Account created, but auto-login failed. Please log in manually.';
+        setTimeout(() => {
+          navigateTo('/auth/login');
+        }, 2000);
+      }
     }
   } catch (err) {
     console.error('Registration error', err);
