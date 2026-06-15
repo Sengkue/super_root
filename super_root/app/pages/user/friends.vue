@@ -2,66 +2,67 @@
     <div class="w-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div class="flex items-center gap-4">
-          <button @click="$router.back()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          <button @click="$router.back()" class="w-10 h-10 flex items-center justify-center text-[#fcd34d] hover:text-white transition-colors group">
+            <svg class="w-7 h-7 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M15 19l-7-7 7-7"></path></svg>
           </button>
-          <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
-            <span class="text-4xl">👥</span> Friends
+          <h1 class="text-3xl font-bold text-white tracking-wide">
+            Friends
           </h1>
         </div>
         
         <div class="relative w-full sm:w-64">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <svg class="w-5 h-5 text-[#fcd34d]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke-dasharray="2 2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </div>
           <input 
             type="text" 
             v-model="searchQuery" 
             placeholder="Search friends..." 
-            class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 transition-colors"
+            class="w-full bg-[#0d1b2a] border-2 border-dashed border-[#84cc16] text-white placeholder-slate-400 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ec4899] block pl-10 p-2.5 transition-all shadow-md"
           >
         </div>
       </div>
 
-      <div v-if="pending" class="text-center py-12 text-slate-600 dark:text-slate-400 text-lg">
-        <div class="inline-block animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
+      <div v-if="pending" class="text-center py-12 text-[#fcd34d] text-lg">
+        <div class="inline-block animate-spin w-8 h-8 border-4 border-[#ec4899] border-t-transparent rounded-full mb-4"></div>
         <p>Loading users...</p>
       </div>
       
-      <div v-else-if="filteredUsers.length === 0" class="text-center py-12 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-700">
+      <div v-else-if="filteredUsers.length === 0" class="text-center py-12 text-[#fcd34d] bg-[#0d1b2a] rounded-2xl border-post-edge shadow-lg">
         <span class="text-5xl block mb-4">📭</span>
         <p class="text-xl">{{ searchQuery ? 'No users match your search.' : 'No other users found.' }}</p>
       </div>
 
-      <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div v-for="user in filteredUsers" :key="user.id" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm overflow-hidden hover:border-slate-400 dark:border-slate-600 transition-colors flex flex-col">
+      <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-4 pb-20">
+        <div v-for="user in filteredUsers" :key="user.id" class="bg-denim border-post-edge rounded-2xl overflow-hidden flex flex-col shadow-xl">
           <!-- Cover Photo area -->
-          <div class="h-16 bg-slate-100 dark:bg-slate-700 relative" :style="user.profile?.coverImage ? `background-image: url('${user.profile.coverImage}'); background-size: cover; background-position: center;` : ''" :class="{'bg-gradient-to-r from-slate-600 to-slate-500': !user.profile?.coverImage}"></div>
+          <div class="h-20 mx-2 mt-2 relative bg-[#0d1b2a] rounded-xl overflow-hidden shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]" :style="user.profile?.coverImage ? `background-image: url('${user.profile.coverImage}'); background-size: cover; background-position: center;` : ''">
+          </div>
           
-          <div class="px-4 pb-4 flex-1 flex flex-col relative">
+          <div class="px-4 pb-4 flex-1 flex flex-col relative z-10">
             <!-- Avatar -->
-            <div class="relative -mt-8 mb-2">
-              <div class="w-16 h-16 rounded-full border-4 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-700 flex items-center justify-center shadow-md overflow-hidden" :class="{'bg-gradient-to-br from-blue-500 to-pink-500': !user.profile?.profileImage}">
-                <img v-if="user.profile?.profileImage" :src="user.profile.profileImage" class="w-full h-full object-cover" />
-                <span v-else class="text-2xl font-bold text-slate-900 dark:text-white">{{ user.username.charAt(0).toUpperCase() }}</span>
-              </div>
+            <div class="flex justify-center -mt-10 mb-3 relative z-20">
+              <NuxtLink :to="`/user/profile?id=${user.id}`" class="hmong-avatar cursor-pointer transition-transform hover:scale-105">
+                <img v-if="user.profile?.profileImage" :src="user.profile.profileImage" class="w-full h-full object-cover rounded-full relative z-10" />
+                <span v-else class="text-[#fcd34d] font-bold text-xl relative z-10">{{ user.username.charAt(0).toUpperCase() }}</span>
+              </NuxtLink>
             </div>
             
             <!-- User Info -->
-            <div class="mb-3 flex-1 text-center">
-              <NuxtLink :to="`/user/profile?id=${user.id}`" class="text-lg font-bold text-slate-900 dark:text-slate-50 hover:text-blue-400 transition-colors block mb-0.5 truncate">
+            <div class="mb-4 flex-1 text-center mt-2">
+              <NuxtLink :to="`/user/profile?id=${user.id}`" class="text-lg font-bold text-white hover:text-[#ec4899] transition-colors block mb-1 truncate drop-shadow-md">
                 {{ user.username }}
               </NuxtLink>
-              <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-1" v-if="user.profile?.bio">{{ user.profile.bio }}</p>
+              <p class="text-xs text-[#fcd34d] line-clamp-2" v-if="user.profile?.bio">{{ user.profile.bio }}</p>
             </div>
             
             <!-- Actions -->
-            <div class="flex flex-col gap-2 mt-auto pt-3 border-t border-slate-700/50">
-              <NuxtLink :to="`/user/profile?id=${user.id}`" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 py-1.5 px-2 rounded-lg font-bold text-center text-xs transition-colors">
-                View Profile
+            <div class="flex flex-col gap-3 mt-auto pt-4 border-t border-dashed border-[#ec4899]/50">
+              <NuxtLink :to="`/user/profile?id=${user.id}`" class="stitched-patch-btn hover:scale-105 transition-transform" style="padding: 6px; justify-content: center; width: 100%;">
+                <span class="text-xs font-bold text-white relative z-10">View Profile</span>
               </NuxtLink>
-              <button @click="toggleFollow(user)" class="w-full text-slate-900 dark:text-white py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors" :class="user.isFollowing ? 'bg-slate-200 dark:bg-slate-600 hover:bg-slate-100 dark:bg-slate-700' : 'bg-indigo-600 hover:bg-indigo-700'">
-                {{ user.isFollowing ? 'Unfollow' : 'Follow' }}
+              <button @click="toggleFollow(user)" class="stitched-patch-btn hover:scale-105 transition-transform" :style="user.isFollowing ? 'border-color: #84cc16; background-color: #ec4899; padding: 6px; justify-content: center; width: 100%;' : 'padding: 6px; justify-content: center; width: 100%;'">
+                <span class="text-xs font-bold relative z-10" :class="user.isFollowing ? 'text-[#0d1b2a]' : 'text-white'">{{ user.isFollowing ? 'Unfollow' : 'Follow' }}</span>
               </button>
             </div>
           </div>

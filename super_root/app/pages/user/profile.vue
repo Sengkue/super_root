@@ -55,23 +55,31 @@
           <!-- Action Buttons -->
           <div class="flex gap-2 mb-4">
             <template v-if="isOwnProfile">
-              <button @click="showCreatePost = true" class="flex-1 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Add Post
+              <button @click="showCreatePost = true" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform !border-[#fcd34d]">
+                <div class="flex items-center justify-center gap-2 z-10 relative text-[#fcd34d] font-black group-hover:text-yellow-300">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M12 4v16m8-8H4"></path></svg>
+                  <span class="uppercase">Add Post</span>
+                </div>
               </button>
-              <button @click="startEditing" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                Edit Profile
+              <button @click="startEditing" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform !border-[#0ea5e9]">
+                <div class="flex items-center justify-center gap-2 z-10 relative text-[#0ea5e9] font-black group-hover:text-sky-300">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                  <span class="uppercase">Edit</span>
+                </div>
               </button>
             </template>
             <template v-else>
-              <button @click="toggleFollow" class="flex-1 text-slate-900 dark:text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors" :class="isFollowingTarget ? 'bg-slate-200 dark:bg-slate-600 hover:bg-slate-100 dark:bg-slate-700' : 'bg-indigo-600 hover:bg-indigo-700'">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7h-2v2h-2v2h2v2h2v-2h2V9h-2V7z"></path></svg>
-                {{ isFollowingTarget ? 'Unfollow' : 'Follow' }}
+              <button @click="toggleFollow" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform" :class="isFollowingTarget ? '!border-[#ec4899]' : '!border-[#fcd34d]'">
+                <div class="flex items-center justify-center gap-2 z-10 relative font-black transition-colors" :class="isFollowingTarget ? 'text-[#ec4899] group-hover:text-pink-400' : 'text-[#fcd34d] group-hover:text-yellow-300'">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7h-2v2h-2v2h2v2h2v-2h2V9h-2V7z"></path></svg>
+                  <span class="uppercase">{{ isFollowingTarget ? 'Unfollow' : 'Follow' }}</span>
+                </div>
               </button>
-              <NuxtLink :to="`/chat/${targetUserId}`" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                Message
+              <NuxtLink :to="`/chat/${targetUserId}`" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform cursor-pointer !border-[#84cc16]">
+                <div class="flex items-center justify-center gap-2 z-10 relative text-[#84cc16] font-black group-hover:text-green-400">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                  <span class="uppercase">Message</span>
+                </div>
               </NuxtLink>
             </template>
           </div>
@@ -123,12 +131,16 @@
               <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Works at</label>
               <input v-model="editForm.worksAt" type="text" class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-400 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Company Name" />
             </div>
-            <div class="flex gap-2 pt-2">
-              <button @click="saveProfile" :disabled="isSaving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white py-2 px-4 rounded-lg font-bold transition-colors disabled:opacity-50">
-                {{ isSaving ? 'Saving...' : 'Save' }}
+            <div class="flex gap-4 pt-4 mt-2">
+              <button @click="saveProfile" :disabled="isSaving" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform !border-[#84cc16] disabled:opacity-50 disabled:hover:scale-100">
+                <div class="flex items-center justify-center gap-2 z-10 relative text-[#84cc16] font-black group-hover:text-green-400 uppercase tracking-wide">
+                  {{ isSaving ? 'Saving...' : 'Save Profile' }}
+                </div>
               </button>
-              <button @click="isEditingProfile = false" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 py-2 px-4 rounded-lg font-bold transition-colors">
-                Cancel
+              <button @click="isEditingProfile = false" class="stitched-patch-btn flex-1 group flex items-center justify-center !p-3 hover:scale-105 transition-transform !border-[#f87171]">
+                <div class="flex items-center justify-center gap-2 z-10 relative text-[#f87171] font-black group-hover:text-red-400 uppercase tracking-wide">
+                  Cancel
+                </div>
               </button>
             </div>
           </div>
@@ -136,44 +148,39 @@
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="bg-white dark:bg-slate-800 rounded-2xl mb-4 border border-slate-300 dark:border-slate-700 shadow-sm flex overflow-hidden">
-      <div @click="activeTab = 'Posts'" :class="['flex-1 text-center py-3 font-bold cursor-pointer transition-colors', activeTab === 'Posts' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-700/50']">Posts</div>
-      <div @click="activeTab = 'Photos'" :class="['flex-1 text-center py-3 font-bold cursor-pointer transition-colors border-l border-slate-300 dark:border-slate-700', activeTab === 'Photos' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-700/50']">Photos</div>
+    <!-- Tabs (Restored without bulky cards) -->
+    <div class="flex gap-4 mb-6 px-1">
+      <button @click="activeTab = 'Posts'" :class="['flex-1 text-center py-3 font-extrabold cursor-pointer transition-all rounded-2xl border-post-edge shadow-md uppercase tracking-wide', activeTab === 'Posts' ? 'bg-[#0d1b2a] text-[#ec4899] scale-105' : 'bg-[#14213d] text-white opacity-80 hover:opacity-100']">Posts</button>
+      <button @click="activeTab = 'Photos'" :class="['flex-1 text-center py-3 font-extrabold cursor-pointer transition-all rounded-2xl border-post-edge shadow-md uppercase tracking-wide', activeTab === 'Photos' ? 'bg-[#0d1b2a] text-[#0ea5e9] scale-105' : 'bg-[#14213d] text-white opacity-80 hover:opacity-100']">Photos</button>
     </div>
 
-    <!-- Posts Content -->
-    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-sm overflow-hidden p-4">
-      <h2 class="mb-4 text-slate-900 dark:text-slate-50 text-xl font-bold" v-if="activeTab === 'Posts'">Posts</h2>
-      <h2 class="mb-4 text-slate-900 dark:text-slate-50 text-xl font-bold" v-else>Photos</h2>
-      
-      <div v-if="pending" class="text-center py-8 text-slate-600 dark:text-slate-400">Loading posts...</div>
-      <div v-else-if="error" class="text-center py-8 text-red-400">Failed to load posts</div>
-      <div v-else-if="!targetUserId" class="text-center py-8 text-slate-600 dark:text-slate-400">No user selected.</div>
+    <!-- Content Area (No Card Wrapper) -->
+    <div class="mb-8 px-1">
+      <div v-if="pending" class="text-center py-8 text-[#fcd34d] font-medium">Loading content...</div>
+      <div v-else-if="error" class="text-center py-8 text-red-400 font-medium">Failed to load content</div>
+      <div v-else-if="!targetUserId" class="text-center py-8 text-[#fcd34d] font-medium">No user selected.</div>
       <div v-else>
         <!-- Posts View -->
-        <div v-if="activeTab === 'Posts'" class="flex flex-col gap-4">
+        <div v-if="activeTab === 'Posts'" class="flex flex-col gap-6">
           <FeedPostCard 
             v-for="post in filteredPosts" 
             :key="post.id" 
             :post="post"
             @refresh="fetchUserPosts"
           />
-        </div>
-
-        <!-- Photos View (Grid) -->
-        <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-2">
-          <div v-for="(photo, index) in allPhotos" :key="photo.id" class="aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 hover:opacity-90 transition-opacity border border-slate-400 dark:border-slate-600 cursor-pointer" @click="openLightbox(index)">
-            <img :src="photo.url" class="w-full h-full object-cover" />
+          <div v-if="filteredPosts.length === 0" class="text-center py-12 text-[#fcd34d] font-bold border-2 border-dashed border-[#ec4899]/50 rounded-3xl bg-[#0d1b2a] shadow-lg mt-4">
+            No posts to show.
           </div>
         </div>
 
-        <!-- Empty State -->
-        <div v-if="activeTab === 'Posts' && filteredPosts.length === 0" class="text-center py-12 text-slate-600 dark:text-slate-400">
-          No posts to show.
-        </div>
-        <div v-if="activeTab === 'Photos' && allPhotos.length === 0" class="text-center py-12 text-slate-600 dark:text-slate-400">
-          No photos to show.
+        <!-- Photos View -->
+        <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div v-for="(photo, index) in allPhotos" :key="photo.id" class="aspect-square rounded-2xl overflow-hidden bg-[#0d1b2a] shadow-md hover:scale-105 transition-transform cursor-pointer relative z-10" @click="openLightbox(index)">
+            <img :src="photo.url" class="w-full h-full object-cover z-10 relative" />
+          </div>
+          <div v-if="allPhotos.length === 0" class="col-span-2 md:col-span-3 text-center py-12 text-[#0ea5e9] font-bold border-2 border-dashed border-[#0ea5e9]/50 rounded-3xl bg-[#0d1b2a] shadow-lg mt-4">
+            No photos to show.
+          </div>
         </div>
       </div>
     </div>
@@ -342,6 +349,7 @@ const updateProfileWithImageUrl = async (field, url) => {
     }
   } catch (err) {
     console.error('Failed to update profile image url', err);
+    throw err;
   }
 };
 
@@ -409,6 +417,7 @@ const saveProfile = async () => {
     }
   } catch (err) {
     console.error('Failed to save profile', err);
+    alert('Failed to save profile: ' + (err.message || 'Unknown error'));
   } finally {
     isSaving.value = false;
   }
@@ -474,6 +483,7 @@ const toggleFollow = async () => {
     }
   } catch (err) {
     console.error('Failed to toggle follow', err);
+    alert('Failed to follow/unfollow user');
   }
 };
 

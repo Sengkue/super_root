@@ -1,17 +1,17 @@
 <template>
-  <div class="post-card">
+  <div class="post-card bg-denim border-post-edge">
     <!-- Header -->
-    <div class="post-header">
-      <NuxtLink :to="`/user/profile?id=${post.userId}`" class="avatar hover:opacity-80 transition-opacity">
-        <img v-if="post.user?.profile?.profileImage" :src="post.user.profile.profileImage" class="w-full h-full object-cover rounded-full" />
-        <span v-else>{{ post.user?.username?.charAt(0).toUpperCase() || '?' }}</span>
+    <div class="post-header relative">
+      <NuxtLink :to="`/user/profile?id=${post.userId}`" class="hmong-avatar cursor-pointer transition-transform hover:scale-105 group">
+        <img v-if="post.user?.profile?.profileImage" :src="post.user.profile.profileImage" alt="Profile" />
+        <span v-else>{{ post.user?.username ? post.user.username.charAt(0).toUpperCase() : 'U' }}</span>
       </NuxtLink>
-      <div class="meta">
+      <div class="flex-1">
         <NuxtLink :to="`/user/profile?id=${post.userId}`" class="author hover:text-blue-500 dark:hover:text-blue-400 hover:underline transition-colors">{{ post.user?.username || 'Unknown User' }}</NuxtLink>
         <div class="time">{{ new Date(post.createdAt).toLocaleString() }}</div>
       </div>
-      <div class="post-options-wrapper">
-        <button @click="showOptionsMenu = !showOptionsMenu" class="icon-btn options-btn" title="Options">⋮</button>
+      <div class="post-options-wrapper" ref="optionsWrapperRef">
+        <button @click="showOptionsMenu = !showOptionsMenu" class="hmong-options-btn" title="Options">⋮</button>
         <div v-if="showOptionsMenu" class="options-menu">
           <button @click="handleToggleSave" class="options-item" :class="{ 'text-emerald-500': isSavedByMe }">
             <span class="icon">🔖</span> {{ isSavedByMe ? 'Unsave Post' : 'Save Post' }}
@@ -53,16 +53,18 @@
     </div>
 
     <!-- Uploaded Images -->
-    <div v-if="imageUrls.length > 0" class="post-image-gallery" :class="'grid-' + Math.min(imageUrls.length, 4)">
-      <div 
-        v-for="(url, idx) in imageUrls.slice(0, 4)" 
-        :key="idx" 
-        class="image-wrapper"
-        @click="openLightbox(idx)"
-      >
-        <img :src="url" class="post-uploaded-image" alt="Post attachment" />
-        <div v-if="idx === 3 && imageUrls.length > 4" class="more-images-overlay">
-          +{{ imageUrls.length - 4 }}
+    <div v-if="imageUrls.length > 0" class="border-cross-stitch mt-3 mb-2">
+      <div class="post-image-gallery rounded overflow-hidden" :class="'grid-' + Math.min(imageUrls.length, 4)">
+        <div 
+          v-for="(url, idx) in imageUrls.slice(0, 4)" 
+          :key="idx" 
+          class="image-wrapper"
+          @click="openLightbox(idx)"
+        >
+          <img :src="url" class="post-uploaded-image" alt="Post attachment" />
+          <div v-if="idx === 3 && imageUrls.length > 4" class="more-images-overlay">
+            +{{ imageUrls.length - 4 }}
+          </div>
         </div>
       </div>
     </div>
@@ -146,17 +148,42 @@
     </div>
 
     <!-- Actions -->
-    <div class="post-actions">
-      <button class="action-btn" :class="{ 'liked-active': isLikedByMe }" @click="toggleLike">
-        <span class="icon">👍</span> {{ isLikedByMe ? 'Liked' : 'Like' }}
-      </button>
-      <button class="action-btn" @click="showComments = !showComments">
-        <span class="icon">💬</span> Comment
-      </button>
-      <div class="share-wrapper">
-        <button class="action-btn" @click="handleShareClick">
-          <span class="icon">↗️</span> Share
+    <div class="post-actions flex justify-between mt-4 mb-2 px-1">
+      <div class="relative group flex-1 mr-2">
+        <button class="hmong-action-btn w-full relative z-10 px-2 py-1.5 flex items-center justify-center gap-1 font-bold overflow-hidden" :class="{ 'active': isLikedByMe }" @click="toggleLike">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg> <span class="text-sm">Like</span>
         </button>
+        <div class="absolute -bottom-6 left-0 w-full flex justify-evenly items-start pointer-events-none z-0">
+          <div class="neon-tassel pink" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel green" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel pink" style="transform: scale(0.6) translateY(-4px)"></div>
+        </div>
+      </div>
+      <div class="relative group flex-1 mr-2">
+        <button class="hmong-action-btn w-full relative z-10 px-2 py-1.5 flex items-center justify-center gap-1 font-bold overflow-hidden" @click="showComments = !showComments">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg> <span class="text-sm">Comment</span>
+        </button>
+        <div class="absolute -bottom-6 left-0 w-full flex justify-evenly items-start pointer-events-none z-0">
+          <div class="neon-tassel green" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel pink" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel green" style="transform: scale(0.6) translateY(-4px)"></div>
+        </div>
+      </div>
+      <div class="relative group share-wrapper flex-1">
+        <button class="hmong-action-btn w-full relative z-10 px-2 py-1.5 flex items-center justify-center gap-1 font-bold overflow-hidden" @click="handleShareClick">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg> <span class="text-sm">Share</span>
+        </button>
+        <div class="absolute -bottom-6 left-0 w-full flex justify-evenly items-start pointer-events-none z-0">
+          <div class="neon-tassel pink" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel green" style="transform: scale(0.6) translateY(-4px)"></div>
+          <div class="silver-coin" style="transform: scale(0.8)"></div>
+          <div class="neon-tassel pink" style="transform: scale(0.6) translateY(-4px)"></div>
+        </div>
         
         <div class="share-menu" v-if="showShareMenu">
           <a :href="`https://www.facebook.com/sharer/sharer.php?u=${postUrl}`" target="_blank" rel="noopener noreferrer" class="share-item">
@@ -245,7 +272,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 
@@ -256,6 +283,13 @@ const emit = defineEmits(['refresh']);
 const authStore = useAuthStore();
 
 const showComments = ref(false);
+const optionsWrapperRef = ref(null);
+
+const handleClickOutside = (event) => {
+  if (showOptionsMenu.value && optionsWrapperRef.value && !optionsWrapperRef.value.contains(event.target)) {
+    showOptionsMenu.value = false;
+  }
+};
 const newComment = ref('');
 const replyContent = ref('');
 const replyToId = ref(null);
@@ -715,6 +749,11 @@ watch(() => route.hash, () => {
 
 onMounted(() => {
   handleHashScroll();
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
@@ -722,12 +761,10 @@ onMounted(() => {
 @reference "../../assets/css/main.css";
 
 .post-card {
-  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm;
-  border-width: 1px;
-  border-style: solid;
+  @apply shadow-md;
   border-radius: 1rem;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 @keyframes highlight-fade {
@@ -745,18 +782,6 @@ onMounted(() => {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #475569;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
 }
 
 .author {
@@ -790,10 +815,41 @@ onMounted(() => {
   @apply bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white;
 }
 
-.options-btn {
-  font-weight: bold;
-  font-size: 1.5rem;
-  padding: 0 0.5rem;
+.hmong-options-btn {
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle at 40% 40%, #e2e8f0 0%, #94a3b8 50%, #475569 100%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.9);
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  font-weight: 900;
+  font-size: 1rem;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.hmong-options-btn::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 6px;
+  background: linear-gradient(to right, #94a3b8, #cbd5e1, #94a3b8);
+  border-radius: 1.5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.hmong-options-btn:hover {
+  transform: scale(1.1);
 }
 
 .post-options-wrapper {
@@ -806,16 +862,25 @@ onMounted(() => {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  @apply bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-md;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 0.5rem;
+  background-color: #0d1b2a;
+  border: 2px solid #ec4899; /* Neon Pink */
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(0,0,0,0.5);
   padding: 0.5rem;
   z-index: 50;
   min-width: 160px;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.options-menu::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px dashed #84cc16; /* Neon green inner stitch */
+  border-radius: 4px;
+  pointer-events: none;
 }
 
 .options-item {
@@ -826,21 +891,28 @@ onMounted(() => {
   padding: 0.5rem 0.75rem;
   border: none;
   background: transparent;
-  @apply text-slate-600 dark:text-slate-300;
+  color: #e2e8f0;
   font-size: 0.9rem;
+  font-weight: bold;
   border-radius: 0.25rem;
   cursor: pointer;
   transition: all 0.2s;
   text-align: left;
+  position: relative;
+  z-index: 1; /* above the before element of options-menu */
 }
 
 .options-item:hover {
-  @apply bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white;
+  background-color: #ec4899; /* neon pink hover */
+  color: white;
 }
 
+.options-item.delete-item {
+  color: #fca5a5; /* lighter red */
+}
 .options-item.delete-item:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  background-color: #ef4444; /* red hover */
+  color: white;
 }
 
 .edit-mode {

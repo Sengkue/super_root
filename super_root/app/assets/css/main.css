@@ -53,3 +53,382 @@ a:hover {
   opacity: 0;
   transform: translateY(10px);
 }
+
+/* --- Hmong UI Theme Styles --- */
+
+/* App Batik Background */
+.bg-batik {
+  background-color: #0d1b2a;
+  color: #f8fafc;
+}
+
+/* Post Card Denim */
+.bg-denim {
+  background-color: #14213d;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.25' mix-blend-mode='overlay'/%3E%3C/svg%3E"), 
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,0.05) 0, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 3px);
+  color: #f8fafc;
+}
+
+/* Cross-Stitch Tab Border (Cyan/Pink) */
+.border-stitch-tabs {
+  position: relative;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+}
+.border-stitch-tabs::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  background-color: #14213d;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2L10 10M10 2L2 10' stroke='%2306b6d4' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2L10 10M10 2L2 10' stroke='%23ec4899' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: 0 0, 6px 6px;
+  background-size: 12px 12px;
+  border: 2px solid #06b6d4;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 2px #ec4899;
+}
+
+/* Post Card Double Edge Stitch */
+.border-post-edge {
+  position: relative;
+}
+.border-post-edge::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px dashed #ec4899; /* Pink outer stitch */
+  border-radius: 0.95rem;
+  pointer-events: none;
+  z-index: 10;
+}
+.border-post-edge::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1.5px dashed #84cc16; /* Green inner stitch */
+  border-radius: 0.85rem;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Cross-Stitch border for images */
+.border-cross-stitch {
+  position: relative;
+  padding: 10px; /* Width of the border */
+  border-radius: 12px;
+  z-index: 1;
+}
+.border-cross-stitch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 12px;
+  background-color: #14213d;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='14' height='14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2L12 12M12 2L2 12' stroke='%23ec4899' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='14' height='14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2L12 12M12 2L2 12' stroke='%2384cc16' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: 0 0, 7px 7px;
+  background-size: 14px 14px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+.border-cross-stitch > div.post-image-gallery {
+  position: relative;
+  z-index: 2;
+  background-color: #14213d; /* Covers the center X's */
+  border-radius: 6px;
+  padding: 4px; /* Space inside the cross stitch before images */
+}
+
+/* Clothing edge bottom for Navbar */
+.clothes-edge-bottom {
+  border-bottom: 1.5px dashed #ec4899; /* pink outer */
+}
+.clothes-edge-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  border-bottom: 1.5px dashed #84cc16; /* green inner */
+  pointer-events: none;
+}
+
+/* Clothing edge top for Footer */
+.clothes-edge-top {
+  border-top: 1.5px dashed #ec4899; /* pink outer */
+}
+.clothes-edge-top::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed #84cc16; /* green inner */
+  pointer-events: none;
+}
+
+.silver-coin-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 4px;
+}
+
+/* Exact mockup coin */
+.silver-coin {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 40% 40%, #e2e8f0 0%, #94a3b8 50%, #475569 100%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.9);
+}
+.silver-coin::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 6px;
+  background: linear-gradient(to right, #94a3b8, #cbd5e1, #94a3b8);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.silver-coin::after {
+  content: '✿';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #1e293b;
+  opacity: 0.7;
+}
+
+/* Neon Tassels exactly as in image */
+.neon-tassel {
+  width: 10px;
+  height: 28px;
+  position: relative;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.neon-tassel.pink { 
+  background: repeating-linear-gradient(90deg, #ff007f 0px, #ff007f 1px, #ff4da6 1px, #ff4da6 2px); 
+  clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+.neon-tassel.green { 
+  background: repeating-linear-gradient(90deg, #00ff00 0px, #00ff00 1px, #66ff66 1px, #66ff66 2px); 
+  clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+.neon-tassel::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 8px;
+  background: radial-gradient(ellipse at top, #e2e8f0, #64748b);
+  border-radius: 4px 4px 2px 2px;
+}
+
+/* Glowing Create Button */
+.hmong-glow {
+  box-shadow: 0 0 40px rgba(253, 186, 116, 0.8), 
+              0 0 20px rgba(236, 72, 153, 0.5);
+}
+
+.silver-icon {
+  fill: url(#silverGradient);
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)) drop-shadow(0 1px 1px rgba(255,255,255,0.4));
+}
+
+/* Hmong Style Action Buttons */
+.hmong-action-btn {
+  background-color: #0d1b2a;
+  color: #e2e8f0;
+  border: 2px solid #ec4899; /* Neon Pink */
+  border-radius: 8px;
+  position: relative;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 0 8px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+.hmong-action-btn::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px dashed #84cc16; /* Neon Green */
+  border-radius: 4px;
+  pointer-events: none;
+}
+.hmong-action-btn:hover {
+  background-color: #1a2a40;
+  box-shadow: 0 6px 12px rgba(236, 72, 153, 0.4), inset 0 0 8px rgba(0,0,0,0.5);
+}
+.hmong-action-btn:active {
+  transform: translateY(2px);
+}
+.hmong-action-btn.active {
+  background-color: #ec4899; /* Solid Pink when active */
+  color: #fff;
+  border-color: #fcd34d; /* Yellow border */
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+}
+.hmong-action-btn.active::before {
+  border-color: #fff; /* White stitch */
+}
+
+/* Stitched Patch Icon Buttons */
+.stitched-patch-btn {
+  background-color: #0d1b2a;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+  border: 2px solid #ec4899; /* Neon pink outer */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.stitched-patch-btn::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px dashed #84cc16; /* Neon green inner stitch */
+  border-radius: 6px;
+  pointer-events: none;
+}
+.stitched-patch-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.6), 0 0 10px rgba(236,72,153,0.4);
+}
+.stitched-patch-btn svg {
+  stroke-dasharray: 2 2; /* Makes the icon look stitched! */
+  stroke-width: 2.5;
+  stroke: #fcd34d; /* Yellow thread */
+  fill: none;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.8));
+  z-index: 1;
+}
+
+/* Hmong Style Dialogue Box */
+.hmong-dialogue {
+  background-color: #0d1b2a !important;
+  border: 2px solid #ec4899 !important; /* Neon Pink */
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(0,0,0,0.5) !important;
+}
+.hmong-dialogue::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1.5px dashed #84cc16; /* Neon green inner stitch */
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Specific Notification Items */
+.hmong-dialogue-item {
+  color: #e2e8f0;
+  transition: all 0.2s ease;
+  background: transparent !important;
+}
+.hmong-dialogue-item:hover {
+  background-color: #ec4899 !important;
+  color: white !important;
+}
+.hmong-dialogue-item-unread {
+  background-color: rgba(236, 72, 153, 0.2) !important;
+}
+
+/* Small Hmong style icon for notifications */
+.hmong-notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+  background-color: #0d1b2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed currentColor;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.8);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.hmong-notif-icon::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px dashed #fcd34d; /* Yellow inner stitch */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Hmong Style Avatar */
+.hmong-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  position: relative;
+  background-color: #0d1b2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #fcd34d; /* Yellow initial */
+  border: 2px dashed #ec4899; /* Thinner pink dashed frame */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.8);
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 3px; /* Reduced padding to make image larger */
+}
+.hmong-avatar::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border: 1.5px dashed #84cc16; /* Neon green inner stitch */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+}
+.hmong-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  z-index: 5;
+  position: relative;
+}
+
+/* Xauv (Necklace) pendant dangling below the avatar */
+.hmong-avatar-pendant {
+  position: absolute;
+  bottom: -22px; /* Moved down further */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+

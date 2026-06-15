@@ -1,74 +1,67 @@
 <template>
   <div class="max-w-3xl mx-auto p-4 md:p-6 animate-[fadeIn_0.3s_ease-out]">
-    <!-- Header -->
-    <div class="mb-8 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-6 relative">
+    <div class="mb-8 flex items-center justify-between border-b border-dashed border-[#ec4899]/50 pb-6 relative">
       <div class="flex items-center gap-4 z-10">
-        <button @click="router.back()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm border border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        <button @click="router.back()" class="w-10 h-10 flex items-center justify-center text-[#fcd34d] hover:text-white transition-colors group">
+          <svg class="w-7 h-7 transition-transform group-hover:-translate-x-1 z-10 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
-        <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 tracking-tight">Messages</h1>
+        <h1 class="text-3xl font-extrabold text-white tracking-wide drop-shadow-md">Messages</h1>
       </div>
       
-      <button class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors z-10" title="New Message">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      <button class="w-10 h-10 flex items-center justify-center text-[#fcd34d] hover:text-white transition-colors group" title="New Message">
+        <svg class="w-7 h-7 z-10 relative transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" stroke-dasharray="2 2" d="M12 4v16m8-8H4"></path></svg>
       </button>
-
-      <!-- Decorative Blur -->
-      <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
 
     <!-- Conversations List -->
     <div v-if="loading" class="flex justify-center py-20">
-      <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin shadow-lg shadow-indigo-500/20"></div>
+      <div class="w-10 h-10 border-4 border-[#ec4899] border-t-transparent rounded-full animate-spin"></div>
     </div>
     
-    <div v-else-if="conversations.length === 0" class="flex flex-col items-center justify-center py-20 text-center animate-[slideUp_0.4s_ease-out]">
-      <div class="w-32 h-32 mb-6 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 flex items-center justify-center shadow-inner">
+    <div v-else-if="conversations.length === 0" class="flex flex-col items-center justify-center py-20 text-center animate-[slideUp_0.4s_ease-out] bg-[#0d1b2a] rounded-2xl border-post-edge shadow-lg mx-2">
+      <div class="w-24 h-24 mb-6 rounded-full flex items-center justify-center">
         <span class="text-5xl">💬</span>
       </div>
-      <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">No messages yet</h2>
-      <p class="text-slate-500 dark:text-slate-400 max-w-sm mb-6">Start connecting with your friends and followers. Your active conversations will appear here.</p>
-      <NuxtLink to="/search" class="px-6 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 transition-all">
-        Find People to Chat
+      <h2 class="text-2xl font-bold text-white mb-2">No messages yet</h2>
+      <p class="text-[#fcd34d] max-w-sm mb-6">Start connecting with your friends and followers.</p>
+      <NuxtLink to="/search" class="stitched-patch-btn hover:scale-105 transition-transform" style="padding: 12px 24px;">
+        <span class="relative z-10 font-bold text-white">Find People to Chat</span>
       </NuxtLink>
     </div>
 
-    <div v-else class="space-y-3 relative z-10">
+    <div v-else class="space-y-4 relative z-10 pb-20">
       <NuxtLink 
         v-for="conv in conversations" 
         :key="conv.user.id" 
         :to="`/chat/${conv.user.id}`"
-        class="group block p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:border-indigo-300 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all relative overflow-hidden"
+        class="group block p-4 bg-denim rounded-2xl border-post-edge shadow-md hover:scale-[1.02] transition-transform relative mx-2"
       >
-        <!-- Unread Glow -->
-        <div v-if="conv.unreadCount > 0" class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-l-2xl shadow-[0_0_10px_rgba(99,102,241,0.8)]"></div>
-
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 relative z-10">
           <!-- Avatar -->
           <div class="relative shrink-0">
-            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-bold text-xl shadow-md group-hover:shadow-indigo-500/40 transition-shadow overflow-hidden">
-               <img v-if="conv.user?.profile?.profileImage" :src="conv.user.profile.profileImage" class="w-full h-full object-cover" />
-               <span v-else>{{ conv.user.username.charAt(0).toUpperCase() }}</span>
+            <div class="hmong-avatar bg-[#0d1b2a]">
+               <img v-if="conv.user?.profile?.profileImage" :src="conv.user.profile.profileImage" class="w-full h-full object-cover rounded-full z-10 relative" />
+               <span v-else class="text-[#fcd34d] font-bold text-xl relative z-10">{{ conv.user.username.charAt(0).toUpperCase() }}</span>
             </div>
-            <div v-if="conv.user.isOnline" class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
+            <div v-if="conv.user.isOnline" class="absolute bottom-0 right-0 w-4 h-4 bg-[#84cc16] border-2 border-[#0d1b2a] rounded-full z-20 shadow-[0_0_8px_#84cc16]"></div>
           </div>
           
           <div class="flex-1 min-w-0 py-1">
             <div class="flex items-center justify-between mb-1">
-              <h2 class="font-bold text-slate-900 dark:text-white truncate text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              <h2 class="font-bold text-white truncate text-lg group-hover:text-[#ec4899] transition-colors drop-shadow-md">
                 {{ conv.user.username }}
               </h2>
-              <span class="text-xs font-medium text-slate-400 dark:text-slate-500 shrink-0 ml-2" :class="{'text-indigo-600 dark:text-indigo-400': conv.unreadCount > 0}">
+              <span class="text-xs font-bold shrink-0 ml-2" :class="conv.unreadCount > 0 ? 'text-[#84cc16]' : 'text-slate-400'">
                 {{ formatDate(conv.latestMessage?.createdAt) }}
               </span>
             </div>
             <div class="flex items-center justify-between gap-3">
-              <p class="text-[15px] truncate" :class="conv.unreadCount > 0 ? 'font-semibold text-slate-800 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400'">
-                <span v-if="conv.latestMessage?.senderId === authStore.activeUserId" class="text-slate-400">You: </span>
+              <p class="text-[14px] truncate drop-shadow-sm font-medium" :class="conv.unreadCount > 0 ? 'text-white' : 'text-[#fcd34d]'">
+                <span v-if="conv.latestMessage?.senderId === authStore.activeUserId" class="opacity-70">You: </span>
                 {{ conv.latestMessage?.content }}
               </p>
               
-              <div v-if="conv.unreadCount > 0" class="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[11px] flex items-center justify-center font-bold shrink-0 shadow-lg shadow-indigo-500/30 animate-pulse">
+              <div v-if="conv.unreadCount > 0" class="w-6 h-6 rounded-full bg-[#ec4899] text-[#0d1b2a] text-xs flex items-center justify-center font-black shrink-0 shadow-[0_0_10px_#ec4899] border border-dashed border-white">
                 {{ conv.unreadCount }}
               </div>
             </div>

@@ -1,32 +1,32 @@
 <template>
   <div class="relative z-50" ref="bellContainer">
-    <button @click="toggleNotifications" class="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none bg-slate-100 dark:bg-slate-800 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-      <span v-if="unreadCount > 0" class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-slate-50 dark:border-slate-900 transform translate-x-1/3 -translate-y-1/3">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+    <button @click="toggleNotifications" class="stitched-patch-btn group">
+      <svg class="w-6 h-6 transition-transform group-hover:scale-110" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+      <span v-if="unreadCount > 0" class="absolute -top-2 -right-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-[#14213d] z-10">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
     </button>
     
     <!-- Notifications Dropdown -->
-    <div v-if="showNotifications" class="absolute mt-3 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden z-50 transform transition-all duration-200 before:content-[''] before:absolute before:-top-3 before:left-0 before:w-full before:h-3" :class="[alignLeft ? '-left-2 origin-top-left' : 'right-0 origin-top-right', dropdownClass]">
-      <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
-        <h3 class="font-bold text-slate-900 dark:text-white">{{ $t('notifications_ui.title') }}</h3>
-        <button v-if="unreadCount > 0" @click="markAllAsRead" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none">
+    <div v-if="showNotifications" class="hmong-dialogue absolute mt-3 w-80 max-w-[calc(100vw-2rem)] overflow-hidden z-50 transform transition-all duration-200 before:content-[''] before:absolute before:-top-3 before:left-0 before:w-full before:h-3" :class="[alignLeft ? '-left-2 origin-top-left' : 'right-0 origin-top-right', dropdownClass]">
+      <div class="p-4 border-b border-[#ec4899]/50 flex items-center justify-between relative z-10">
+        <h3 class="font-bold text-white">{{ $t('notifications_ui.title') }}</h3>
+        <button v-if="unreadCount > 0" @click="markAllAsRead" class="text-xs font-bold text-[#fcd34d] hover:text-white hover:underline focus:outline-none">
           {{ $t('notifications_ui.markAllRead') }}
         </button>
       </div>
-      <div class="max-h-96 overflow-y-auto">
-        <div v-if="notifications.length === 0" class="p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
+      <div class="max-h-96 overflow-y-auto relative z-10">
+        <div v-if="notifications.length === 0" class="p-8 text-center text-slate-400 text-sm">
           {{ $t('notifications_ui.empty') }}
         </div>
         <template v-else>
-          <div v-for="notif in notifications" :key="notif.id" @click="handleNotificationClick(notif)" class="p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors flex gap-3" :class="{'bg-blue-50/50 dark:bg-blue-900/10': !notif.isRead}">
-            <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white" :class="getNotificationIconBg(notif.type)">
-              <span class="text-lg">{{ getNotificationEmoji(notif.type) }}</span>
+          <div v-for="notif in notifications" :key="notif.id" @click="handleNotificationClick(notif)" class="hmong-dialogue-item p-4 border-b border-[#ec4899]/30 cursor-pointer flex gap-3" :class="{'hmong-dialogue-item-unread': !notif.isRead}">
+            <div class="hmong-notif-icon shadow-[0_2px_4px_rgba(0,0,0,0.5)]" :style="{ borderColor: getNotificationColor(notif.type), color: getNotificationColor(notif.type) }">
+              <span class="w-6 h-6 flex items-center justify-center" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));" v-html="getNotificationSvg(notif.type)"></span>
             </div>
             <div class="flex-1">
-              <p class="text-sm text-slate-800 dark:text-slate-200" :class="{'font-semibold': !notif.isRead}">{{ notif.message }}</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ formatTime(notif.createdAt) }}</p>
+              <p class="text-sm" :class="{'font-bold text-white': !notif.isRead, 'text-slate-200': notif.isRead}">{{ notif.message }}</p>
+              <p class="text-xs text-[#fcd34d] mt-1">{{ formatTime(notif.createdAt) }}</p>
             </div>
-            <div v-if="!notif.isRead" class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></div>
+            <div v-if="!notif.isRead" class="w-3 h-3 rounded-full bg-[#84cc16] flex-shrink-0 mt-1.5 shadow-[0_0_8px_#84cc16]"></div>
           </div>
         </template>
       </div>
@@ -129,7 +129,9 @@ const fetchNotifications = async () => {
     if (res.success) {
       notifications.value = res.data;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error('Failed to fetch notifications:', error);
+  }
 };
 
 const markAllAsRead = async () => {
@@ -137,7 +139,9 @@ const markAllAsRead = async () => {
   try {
     await $api(`/notifications/${authStore.activeUserId}/read-all`, { method: 'PUT' });
     notifications.value.forEach(n => n.isRead = true);
-  } catch (error) {}
+  } catch (error) {
+    console.error('Failed to mark notifications as read:', error);
+  }
 };
 
 const handleNotificationClick = async (notif) => {
@@ -145,7 +149,9 @@ const handleNotificationClick = async (notif) => {
     try {
       await $api(`/notifications/${notif.id}/read`, { method: 'PUT' });
       notif.isRead = true;
-    } catch (error) {}
+    } catch (error) {
+      console.error('Failed to mark notification as read on click:', error);
+    }
   }
   showNotifications.value = false;
   if (notif.link) {
@@ -153,25 +159,30 @@ const handleNotificationClick = async (notif) => {
   }
 };
 
-const getNotificationEmoji = (type) => {
+const getNotificationSvg = (type) => {
+  const stitchedStyle = 'stroke-width="2.5" stroke-dasharray="2 2" fill="none" stroke="currentColor"';
   switch (type) {
-    case 'like': return '❤️';
-    case 'comment': return '💬';
-    case 'follow': return '👤';
-    case 'system': return '⚙️';
-    case 'message': return '✉️';
-    default: return '🔔';
+    case 'like': 
+      return `<svg viewBox="0 0 24 24" ${stitchedStyle}><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`;
+    case 'comment': 
+      return `<svg viewBox="0 0 24 24" ${stitchedStyle}><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>`;
+    case 'follow': 
+      return `<svg viewBox="0 0 24 24" ${stitchedStyle}><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>`;
+    case 'message': 
+      return `<svg viewBox="0 0 24 24" ${stitchedStyle}><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+    default: 
+      return `<svg viewBox="0 0 24 24" ${stitchedStyle}><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>`;
   }
 };
 
-const getNotificationIconBg = (type) => {
+const getNotificationColor = (type) => {
   switch (type) {
-    case 'like': return 'bg-pink-500';
-    case 'comment': return 'bg-blue-500';
-    case 'follow': return 'bg-purple-500';
-    case 'system': return 'bg-slate-500';
-    case 'message': return 'bg-indigo-500';
-    default: return 'bg-emerald-500';
+    case 'like': return '#ec4899'; // Neon Pink
+    case 'comment': return '#3b82f6'; // Blue
+    case 'follow': return '#a855f7'; // Purple
+    case 'message': return '#10b981'; // Green
+    case 'system': return '#fcd34d'; // Yellow
+    default: return '#cbd5e1'; // Silver
   }
 };
 
